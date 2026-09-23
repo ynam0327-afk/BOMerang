@@ -259,9 +259,12 @@ public class MavenDependencyResolver {
                     Path parentPomPath = parentPomResult.get();
 
                     try {
+                       // A dependency version may reference a property defined
+                       // by the parent's parent (for example Jackson's versions).
                        parentProperties =
-                                mavenParser.parseProperties(
-                                        parentPomPath.toFile()
+                                loadPropertiesWithParents(
+                                        parentPomPath.toFile(),
+                                        5
                                 );
 
                         parentManagedVersions =
