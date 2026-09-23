@@ -16,9 +16,14 @@ public class MavenRepositoryClient {
     private static final String MAVEN_CENTRAL_URL =
             "https://repo.maven.apache.org/maven2";
 
+    private final String repositoryUrl;
+
     private final HttpClient httpClient;
 
     public MavenRepositoryClient() {
+        String configured = System.getenv("BOMERANG_MAVEN_REPO_URL");
+        this.repositoryUrl = configured == null || configured.isBlank()
+                ? MAVEN_CENTRAL_URL : configured.replaceAll("/+$", "");
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
@@ -47,7 +52,7 @@ public class MavenRepositoryClient {
          * artifactId-version.pom
          */
         String pomUrl =
-                MAVEN_CENTRAL_URL
+                repositoryUrl
                 + "/" + groupPath
                 + "/" + artifactId
                 + "/" + version
