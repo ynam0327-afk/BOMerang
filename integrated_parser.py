@@ -20,7 +20,7 @@ def analyze(project_dir: Path, java_classes: Path, pypi_client=None, resolve_mav
     for path in sorted(project_dir.rglob("*")):
         if not path.is_file() or any(p in {".git", "target", ".venv", "venv"} for p in path.parts):
             continue
-        if path.name == "requirements.txt":
+        if path.name in {"requirements.txt", "pyproject.toml"}:
             files.append(str(path.relative_to(project_dir)))
             for node in PythonParser(pypi_client=pypi_client).parse(str(path)):
                 item = asdict(node)

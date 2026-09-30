@@ -40,6 +40,11 @@ class IntegratedParserTests(unittest.TestCase):
         path.mkdir(parents=True, exist_ok=True)
         (path / "requirements.txt").write_text(content, encoding="utf-8")
 
+    def pyproject(self, content, folder=None):
+        path = folder or self.project
+        path.mkdir(parents=True, exist_ok=True)
+        (path / "pyproject.toml").write_text(content, encoding="utf-8")
+
     def pom(self, dependencies, folder=None):
         path = folder or self.project
         path.mkdir(parents=True, exist_ok=True)
@@ -162,6 +167,37 @@ class IntegratedParserTests(unittest.TestCase):
         restored = json.loads(json.dumps(self.result()))
         self.assertEqual(2, len(restored["dependencies"]))
 
+    def test_21_pyproject_toml_is_found(self):
+        self.pyproject('[project]\ndependencies = ["requests==2.32.5"]\n')
+        result = self.result()
+        self.assertEqual({"pyproject.toml"}, set(result["files"]))
+        self.assertEqual("requests", self.nodes()[0]["name"])
 
+    def test_22_pyproject_toml_and_requirements_can_be_mixed(self):
+        self.pyproject('[project]\ndependencies = ["toml-demo-pkg>=1.0"]\n')
+        self.requirements("requirements-demo>=1.0\n")
+        result = self.result()
+        self.assertEqual({"pyproject.toml", "requirements.txt"}, set(result["files"]))
+        self.assertEqual({"toml-demo-pkg", "requirements-demo"}, {n["name"] for n in result["dependencies"]})
+
+    def test_23_poetry_pyproject(self):
+        self.pyproject(
+            '[tool.poetry.dependencies]\nrequests = "^2.32.0"\n'
+        )
+        result = self.result()
+        self.assertEqual({"pyproject.toml"}, set(result["files"]))
+        self.assertEqual("requests", self.nodes()[0]["name"])
+
+    def test_24_poetry_dependency_group(self):
+        self.pyproject(
+        """
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+"""
+    )
+        result = self.result()
+        self.assertEqual({"pyproject.toml"}, set(result["files"]))
+        self.assertEqual("dev", self.nodes()[0]["scope"])
+    
 if __name__ == "__main__":
     unittest.main()

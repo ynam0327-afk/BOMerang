@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from toml_parser import parse_pyproject
+
 from dependency_node import DependencyNode
 from requirement_parser import parse_requirement
 from pypi_client import PyPIClient
@@ -23,10 +25,12 @@ class PythonParser:
 
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
-
+        
     def supports(self, file_name: str) -> bool:
-        return Path(file_name).name == "requirements.txt"
-    # 1차 : requirements.txt만 지원
+        return Path(file_name).name in {
+        "requirements.txt",
+        "pyproject.toml"
+    }# 2차 : requirements.txt + toml 지원
 
     def parse(self, file_path: str) -> list[DependencyNode]:
         visited_files = set() # 파일 순환 참조 방지 (!= 패키지 순환)
@@ -55,6 +59,21 @@ class PythonParser:
             return
 
         visited_files.add(file_path)
+
+        if file_path.name == "pyproject.toml":
+            requirements = parse_pyproject(str(file_path))
+
+            for requirement, scope in requirements:
+                self._parse_package(
+                    requirement,
+                    file_path,
+                    depth=1,
+                    nodes=nodes,
+                    recursion_stack=set(),
+                    expanded_nodes=expanded_nodes,
+                    scope=scope
+                )
+            return
 
         with file_path.open("r", encoding="utf-8") as file:
             for line in file:
@@ -99,7 +118,8 @@ class PythonParser:
         depth: int,
         nodes: dict,
         recursion_stack: set,
-        expanded_nodes: set
+        expanded_nodes: set,
+        scope: str | None = None
     ):
         name = requirement.name
 
@@ -135,6 +155,7 @@ class PythonParser:
                 resolved_version=resolved_version,
                 purl=purl,
                 depth=depth,
+                scope=scope,
                 source_file=source_file.name, # 1차 구현에서는 유지
                 parse_status="success"
             )
@@ -204,7 +225,8 @@ class PythonParser:
                     depth + 1,
                     nodes,
                     recursion_stack,
-                    expanded_nodes
+                    expanded_nodes,
+                    scope=scope
                 )
 
         finally:
