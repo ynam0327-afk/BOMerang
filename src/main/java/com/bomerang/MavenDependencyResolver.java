@@ -15,8 +15,14 @@ public class MavenDependencyResolver {
     private final MavenRepositoryClient repositoryClient;
     private final MavenParser mavenParser;
     private final int maxDepth;
+    private final boolean includeTest;
 
     public MavenDependencyResolver(int maxDepth) {
+        this(maxDepth, false);
+    }
+
+    public MavenDependencyResolver(int maxDepth, boolean includeTest) {
+        this.includeTest = includeTest;
         this.repositoryClient =
                 new MavenRepositoryClient();
 
@@ -307,7 +313,7 @@ public class MavenDependencyResolver {
                     : parsedChildren) {
 
                 /*
-                 * test, provided, optional 의존성은
+                 * 라이브러리 내부 test, provided, optional 의존성은
                  * 현재 실행 프로젝트로 전파되지 않으므로 제외한다.
                  */
                 if (!shouldInclude(parsedChild)) {
@@ -319,7 +325,9 @@ public class MavenDependencyResolver {
                                 parsedChild.getGroupId(),
                                 parsedChild.getArtifactId(),
                                 parsedChild.getVersion(),
-                                parsedChild.getScope(),
+                                "test".equals(node.getScope()) ? "test"
+                                        : "runtime".equals(node.getScope()) ? "runtime"
+                                        : parsedChild.getScope(),
                                 parsedChild.isOptional(),
                                 depth + 1
                         );
@@ -408,7 +416,7 @@ public class MavenDependencyResolver {
 
         String scope = node.getScope();
 
-        if ("test".equals(scope)
+        if (("test".equals(scope) && !includeTest)
                 || "provided".equals(scope)
                 || "system".equals(scope)) {
             return false;
@@ -425,6 +433,12 @@ public class MavenDependencyResolver {
     private boolean shouldInclude(
             DependencyNode node
     ) {
-        return shouldResolve(node);
+        // Dependencies declared test/provided/system in a library never propagate.
+        String scope = node.getScope();
+        return !"test".equals(scope)
+                && !"provided".equals(scope)
+                && !"system".equals(scope)
+                && !node.isOptional()
+                && shouldResolve(node);
     }
 }
