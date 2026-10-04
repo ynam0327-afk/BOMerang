@@ -9,21 +9,34 @@ import java.util.Set;
 /** Emits one JSON document for a pom.xml or build.gradle file. */
 public class JsonDependencyExporter {
     public static void main(String[] args) throws Exception {
-        if (args.length < 1 || args.length > 2
-                || (args.length == 2 && !"--resolve-maven".equals(args[1]))) {
-            System.err.println("Usage: JsonDependencyExporter <pom.xml|build.gradle|build.gradle.kts> [--resolve-maven]");
-            System.exit(2);
+        boolean remote = false;
+        boolean includeTest = false;
+        String target = null;
+        for (String arg : args) {
+            if ("--resolve-maven".equals(arg)) remote = true;
+            else if ("--include-test".equals(arg)) includeTest = true;
+            else if (arg.startsWith("--") || target != null) {
+                usage();
+                return;
+            } else target = arg;
         }
-        File file = new File(args[0]);
+        if (target == null || (includeTest && !remote)) {
+            usage();
+            return;
+        }
+        File file = new File(target);
         if (!file.isFile()) throw new IllegalArgumentException("File not found: " + file);
-        boolean remote = args.length == 2;
+        if (includeTest && !file.getName().equalsIgnoreCase("pom.xml")) {
+            usage();
+            return;
+        }
         List<DependencyNode> roots;
         if (remote && file.getName().equalsIgnoreCase("pom.xml")) {
             // Resolver writes progress to stdout; keep stdout strictly machine-readable JSON.
             java.io.PrintStream original = System.out;
             try {
                 System.setOut(System.err);
-                MavenDependencyResolver resolver = new MavenDependencyResolver(3);
+                MavenDependencyResolver resolver = new MavenDependencyResolver(3, includeTest);
                 roots = resolver.parseRootPom(file);
                 resolver.resolve(roots);
             } finally {
@@ -36,6 +49,12 @@ public class JsonDependencyExporter {
         Set<DependencyNode> seen = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
         for (DependencyNode root : roots) visit(root, file.getName(), 1, seen, entries);
         System.out.println("[" + String.join(",", entries) + "]");
+    }
+
+    private static void usage() {
+        System.err.println("Usage: JsonDependencyExporter <pom.xml|build.gradle|build.gradle.kts> [--resolve-maven] [--include-test]");
+        System.err.println("--include-test requires --resolve-maven and pom.xml");
+        System.exit(2);
     }
 
     private static void visit(DependencyNode node, String source, int depth,
@@ -52,6 +71,7 @@ public class JsonDependencyExporter {
         json.append("\"purl\":").append(quote(purl)).append(',');
         json.append("\"depth\":").append(depth).append(',');
         json.append("\"scope\":").append(quote(node.getScope())).append(',');
+        json.append("\"optional\":").append(node.isOptional()).append(',');
         json.append("\"source_file\":").append(quote(source)).append(',');
         json.append("\"dependencies\":[");
         List<String> children = new ArrayList<>();
