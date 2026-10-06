@@ -1,5 +1,12 @@
 from python_parser import PythonParser
 
+class FakePyPIClient:
+
+    def get_dependencies(self, package_name, version):
+        return []
+
+    def get_available_versions(self, package_name):
+        return []
 
 def test_python_parser_pyproject(tmp_path):
     file = tmp_path / "pyproject.toml"
@@ -18,7 +25,7 @@ dependencies = [
         encoding="utf-8"
     )
 
-    parser = PythonParser()
+    parser = PythonParser(pypi_client=FakePyPIClient())
     nodes = parser.parse(str(file))
 
     for node in nodes:
@@ -63,7 +70,7 @@ packaging = ">=23.0"
         encoding="utf-8"
     )
 
-    parser = PythonParser()
+    parser = PythonParser(pypi_client=FakePyPIClient())
     nodes = parser.parse(str(file))
 
     requests = next(
@@ -95,7 +102,7 @@ pytest = "^8.0"
         encoding="utf-8"
     )
 
-    parser = PythonParser()
+    parser = PythonParser(pypi_client=FakePyPIClient())
     nodes = parser.parse(str(file))
 
     pytest = next(

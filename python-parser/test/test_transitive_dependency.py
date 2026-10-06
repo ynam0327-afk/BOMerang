@@ -15,6 +15,10 @@ class FakePyPIClient:
 
         return []
 
+    # 임시 조치
+    def get_available_versions(self, package_name):
+        return []
+
 
 def test_transitive_dependencies(tmp_path):
 

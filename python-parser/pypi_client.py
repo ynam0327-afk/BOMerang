@@ -6,7 +6,9 @@ from urllib.request import Request, urlopen
 # 파이썬 내장 기능으로 HTTP 요청 전송을 위한 임포트
 
 from packaging.requirements import Requirement
-# PyPI 메타데이터의 requires_dist 필드의 문자열 파싱 및 구조화 의존성 객체 변환을 위해 임포트
+from packaging.version import Version, InvalidVersion
+# PyPI 메타데이터의 requires_dist 필드의 문자열 파싱 및 구조화 의존성
+# 객체 변환을 위해 임포트
 
 class PyPIClient: # PyPI와 통신 역할 캡슐화 클래스
     BASE_URL = "https://pypi.org/pypi" # PyPI 공식 JSON API 기본 경로
@@ -42,6 +44,59 @@ class PyPIClient: # PyPI와 통신 역할 캡슐화 클래스
                 # 전체 파서 실패 or 해당 노드만 에러
                 f"Could not connect to PyPI: {e.reason}"
             ) from e
+
+    def get_available_versions(self, package_name: str) -> list[str]:
+        ## PyPI에서 사용 가능한 패키지 버전 목록 조회
+        url = f"{self.BASE_URL}/{package_name}/json"
+
+        request = Request(
+            url,
+            headers={
+                "Accept": "application/json",
+                "User-Agent": "BOMerang-SBOM-Parser"
+            }
+        )
+
+        try:
+            with urlopen(request, timeout=10) as response:
+                data = json.loads(
+                response.read().decode("utf-8")
+            )
+
+        except HTTPError as e:
+            raise RuntimeError(
+                f"PyPI API request failed: {e.code} "
+                f"({package_name})"
+            ) from e
+
+        except URLError as e:
+            raise RuntimeError(
+                f"Could not connect to PyPI: {e.reason}"
+            ) from e
+
+        versions = []
+
+        releases = data.get("releases", {})
+
+        for version, files in releases.items():
+            try:
+                Version(version)
+            except InvalidVersion:
+                continue
+
+            # yanked 된 release는 후보에서 제외
+            if files and all(
+                file_info.get("yanked", False)
+                for file_info in files
+            ):
+                continue
+
+            versions.append(version)
+
+        return sorted(
+            versions,
+            key=Version
+        )
 
     # requires_dist 추출 및 Requirement 객체 변환
     def get_dependencies( # 하위 의존성 목록 파싱

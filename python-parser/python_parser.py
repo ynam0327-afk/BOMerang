@@ -1,3 +1,4 @@
+from packaging.version import Version
 from pathlib import Path
 
 from toml_parser import parse_pyproject
@@ -123,13 +124,9 @@ class PythonParser:
     ):
         name = requirement.name
 
-        declared_version = self._get_declared_version(
-            requirement
-        )
+        declared_version = self._get_declared_version(requirement)
 
-        resolved_version = self._get_resolved_version(
-            requirement
-        )
+        resolved_version = self._resolve_version(requirement)
 
         purl = make_purl(
             name,
@@ -252,3 +249,41 @@ class PythonParser:
                 return specifier.version
 
         return None
+
+    def _resolve_version(self, requirement):
+        # PyPI 후보 버전 중 requirement 조건 만족하는 버전 선택
+        resolved_version = self._get_resolved_version(requirement)
+        # 정확한 버전은 기존 로직 사용
+        if resolved_version is not None:
+            return resolved_version
+
+        # 버전 조건이 없는 경우
+        if not requirement.specifier:
+            return None
+
+        try:
+            available_versions = self.pypi_client.get_available_versions(
+                requirement.name
+            )
+        except RuntimeError:
+            return None
+
+        candidates = []
+
+        for version in available_versions:
+            try:
+                parsed_version = Version(version)
+
+                if requirement.specifier.contains(
+                    parsed_version,
+                    prereleases=False
+                ):
+                    candidates.append(parsed_version)
+
+            except Exception:
+                continue
+
+        if not candidates:
+            return None
+
+        return str(max(candidates)) # 버전 범위 중 가장 최신 버전

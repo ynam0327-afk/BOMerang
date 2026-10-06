@@ -9,9 +9,18 @@ class FakePyPIClient:
     테스트용 dependency 정보를 반환하는 가짜 PyPI Client
     """
 
-    def __init__(self, dependency_map):
-        self.dependency_map = dependency_map
-        self.call_count = {}
+    def __init__(self, dependency_map=None):
+            self.dependency_map = dependency_map or {}
+            self.call_count = {}
+
+    def get_available_versions(self, package_name):
+        return [
+            "1.0.0",
+            "1.5.0",
+            "2.0.0",            
+            "2.1.0.dev1",
+            "3.0.0",
+        ]
 
     def get_dependencies(self, package_name, version):
         key = (package_name.lower(), version)
@@ -67,8 +76,8 @@ def test_exact_version_is_resolved(tmp_path):
     assert node.resolved_version == "2.32.5"
     assert node.purl == "pkg:pypi/requests@2.32.5"
 
-# 4. 버전 범위만 주어질 때
-def test_version_range_is_not_resolved(tmp_path):
+# 4. 버전 범위만 주어질 때(5,6주차 수정 이전)
+'''def test_version_range_is_not_resolved(tmp_path):
     requirements = tmp_path / "requirements.txt"
 
     requirements.write_text(
@@ -92,7 +101,7 @@ def test_version_range_is_not_resolved(tmp_path):
     assert node.resolved_version is None
     assert node.purl == "pkg:pypi/requests"
 
-    assert fake_client.call_count == {}
+    assert fake_client.call_count == {}'''
 
 # 5. 버전이 없다면?
 def test_package_without_version_is_unresolved(tmp_path):
@@ -287,3 +296,37 @@ def test_circular_dependency_is_detected(tmp_path):
 
     assert package_a.is_circular is True
     assert package_b.is_circular is True
+
+def test_version_range_is_resolved(tmp_path):
+    file = tmp_path / "requirements.txt"
+
+    file.write_text(
+        "test-package>=1.0,<3.0\n",
+        encoding="utf-8"
+    )
+
+    parser = PythonParser(
+        pypi_client=FakePyPIClient()
+    )
+
+    nodes = parser.parse(str(file))
+
+    node = nodes[0]
+
+    assert node.resolved_version == "2.0.0"
+
+def test_prerelease_is_not_selected(tmp_path):
+    file = tmp_path / "requirements.txt"
+
+    file.write_text(
+        "test-package>=2.0,<3.0\n",
+        encoding="utf-8"
+    )
+
+    parser = PythonParser(
+        pypi_client=FakePyPIClient()
+    )
+
+    nodes = parser.parse(str(file))
+
+    assert nodes[0].resolved_version == "2.0.0"

@@ -5,6 +5,12 @@ class FakePyPIClient:
     def get_dependencies(self, package_name, version):
         return []
 
+    # 임시 조치
+    def get_available_versions(self, package_name):
+        return []
+
+
+
 def test_parse_requirements(tmp_path):
     requirements = tmp_path / "requirements.txt"
 
