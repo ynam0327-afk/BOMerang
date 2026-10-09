@@ -127,6 +127,9 @@ class PyPIClient: # PyPI와 통신 역할 캡슐화 클래스
 
             except Exception:
                 # 해석할 수 없는 dependency는 일단 무시
+                # 예외처리 작업중 )) 어떤 오류든 조용히 무시함
+                # but Client는 따로 노드 생성 안함
+                # 유효하지 않은 requires_dist dependency는 아직 무시하기로
                 continue
 
         return dependencies # 하위 의존성 객체 리스트 반환

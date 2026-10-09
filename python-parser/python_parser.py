@@ -9,11 +9,10 @@ from pypi_client import PyPIClient
 
 # 중복 dependency 재탐색 & Node 정보 갱신 정책 -- 테스트&통합에서 문제 가능성 있음
 
+_UNSET = object()
+    # 버전 인자 전달 X vs 버전 조회: None
 def make_purl(name: str, version: str | None = None) -> str:
-    """PyPI package의 PURL을 생성한다.
-    예:requests, 2.32.5-> pkg:pypi/requests@2.32.5
-       urllib3, None-> pkg:pypi/urllib3
-    """
+    # PyPI package의 PURL을 생성
     normalized_name = name.lower().replace("_", "-")
     # PyPI 패키지에서는 처리할 기호 추가 예정
 
@@ -120,13 +119,22 @@ class PythonParser:
         nodes: dict,
         recursion_stack: set,
         expanded_nodes: set,
-        scope: str | None = None
+        scope: str | None = None,
+        resolved_version = _UNSET,
+        resolution_error: RuntimeError | None = None
     ):
         name = requirement.name
-
         declared_version = self._get_declared_version(requirement)
 
-        resolved_version = self._resolve_version(requirement)
+        if resolved_version is _UNSET:
+            if not requirement.specifier:
+                resolved_version = None
+            else:
+                try:
+                    resolved_version = self._resolve_version(requirement)
+                except RuntimeError as e:
+                    resolved_version = None # 다음 노드 생성 코드 진행 가능
+                    resolution_error = e
 
         purl = make_purl(
             name,
@@ -159,7 +167,13 @@ class PythonParser:
 
             nodes[purl] = node
 
-        # 3. 정확한 버전을 모르면 PyPI metadata를 조회하지 않는다.
+        # 버전 조회가 실패하더라도 패키지 정보 유지 -- 노드 기록
+        if resolution_error is not None:
+            node.parse_status = "error"
+            node.error_message = str(resolution_error)
+            return
+
+        #3. 정확한 버전을 모르면 PyPI metadata를 조회하지 않는다.
         if resolved_version is None:
             return
 
@@ -181,41 +195,38 @@ class PythonParser:
             dependencies = self.pypi_client.get_dependencies(
                 name,
                 resolved_version
-            )
+            )        
 
             for dependency in dependencies:
+                # get_dependencies()가 반환한 의존성마다
+                # 하위 의존성 버전 조회(1회)
+                dependency_resolution_error = None
 
-                dependency_resolved_version = (
-                    self._get_resolved_version(
-                        dependency
-                    )
-                )
+                try:
+                    dependency_resolved_version = self._resolve_version(dependency)
+                except RuntimeError as e:
+                    dependency_resolved_version = None
+                    dependency_resolution_error = e
 
+                # 실제 선택된 버전 기준 PURL 생성
                 dependency_purl = make_purl(
-                    dependency.name,
-                    dependency_resolved_version
+                dependency.name,
+                dependency_resolved_version
                 )
 
-                # 6. 현재 Node에 dependency PURL 추가
+                # 현재 Node에 dependency PURL 추가
                 if dependency_purl not in node.dependencies:
+                    node.dependencies.append(dependency_purl)
 
-                    node.dependencies.append(
-                        dependency_purl
-                    )
-
-                # 7. 순환 참조 확인
+                # 순환 참조 확인
                 if dependency_purl in recursion_stack:
-
                     node.is_circular = True
 
                     if dependency_purl in nodes:
-                        nodes[
-                            dependency_purl
-                        ].is_circular = True
-
+                        nodes[dependency_purl].is_circular = True
                     continue
 
-                # 8. dependency를 재귀적으로 분석
+                # 앞에서 조회한 버전을 재사용해 노드를 생성한다.
                 self._parse_package(
                     dependency,
                     source_file,
@@ -223,9 +234,15 @@ class PythonParser:
                     nodes,
                     recursion_stack,
                     expanded_nodes,
-                    scope=scope
+                    scope=scope,
+                    resolved_version=dependency_resolved_version,
+                    resolution_error=dependency_resolution_error
                 )
-
+        except RuntimeError as e:
+            node.parse_status = "error"
+            node.error_message = str(e)
+            return # PyPI 오류 처리 추가
+        
         finally:
             recursion_stack.remove(purl) # 재귀가 끝나면 스택에서 제거
             expanded_nodes.add(purl) # 하위 의존성 탐색 완료
@@ -266,7 +283,7 @@ class PythonParser:
                 requirement.name
             )
         except RuntimeError:
-            return None
+            raise # 오류 삼키기 방지 -- UP
 
         candidates = []
 
