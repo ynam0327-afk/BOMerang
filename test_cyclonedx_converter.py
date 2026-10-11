@@ -60,6 +60,30 @@ class CycloneDXConverterTests(unittest.TestCase):
         self.assertEqual("org.springframework", component["group"])
         self.assertEqual("optional", component["scope"])
 
+
+    def test_component_preserves_scope_and_optional_metadata(self):
+        result = [{
+            "name": "spring-core",
+            "ecosystem": "maven",
+            "purl": "pkg:maven/org.springframework/spring-core@6.1.0",
+            "scope": "compile",
+            "scopes": ["compile", "test"],
+            "optional": False,
+            "optional_values": [],
+            "dependencies": [],
+        }]
+
+        bom = convert_to_cyclonedx(result, serial_number="urn:uuid:test")
+        component = bom["components"][0]
+        props = {prop["name"]: prop["value"] for prop in component["properties"]}
+
+        self.assertEqual("compile", props["bomerang:scope"])
+        self.assertEqual('["compile", "test"]', props["bomerang:scopes"])
+        self.assertEqual("false", props["bomerang:optional"])
+        self.assertEqual("[]", props["bomerang:optional_values"])
+        # Standard CycloneDX scope mapping remains unchanged.
+        self.assertEqual("required", component["scope"])
+
     def test_dangling_dependency_is_not_emitted(self):
         result = {"files": [], "dependencies": [{
             "name": "a", "ecosystem": "pypi", "purl": "pkg:pypi/a",

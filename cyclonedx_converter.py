@@ -71,12 +71,14 @@ def _component(node: dict[str, Any]) -> dict[str, Any]:
         component["scope"] = "required"
 
     properties = []
+    # Preserve parser-specific metadata that CycloneDX does not represent
+    # directly, including the original scope and optional-dependency fields.
     for key in ("ecosystem", "declared_version", "source_file", "depth",
-                "parse_status", "error_message", "is_circular"):
-        value = node.get(key)
-        if value is not None and value != "":
-            properties.append({"name": f"bomerang:{key}", "value": str(value).lower()
-                               if isinstance(value, bool) else str(value)})
+                "parse_status", "error_message", "is_circular",
+                "scope", "scopes", "optional", "optional_values"):
+        prop = _property(key, node.get(key))
+        if prop is not None and (node.get(key) != "" or isinstance(node.get(key), (list, dict))):
+            properties.append(prop)
     if properties:
         component["properties"] = properties
     return component
