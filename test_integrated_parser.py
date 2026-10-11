@@ -23,6 +23,9 @@ class NoNetworkPyPI:
         self.calls.append((name, version))
         return self.dependencies
 
+    def get_available_versions(self, package_name):
+        return []
+
 
 @unittest.skipUnless(
     (CLASSES / "com" / "bomerang" / "JsonDependencyExporter.class").is_file(),
