@@ -99,37 +99,47 @@ class PyPIClient: # PyPI와 통신 역할 캡슐화 클래스
         )
 
     # requires_dist 추출 및 Requirement 객체 변환
-    def get_dependencies( # 하위 의존성 목록 파싱
-        self,
-        package_name: str,
-        version: str
-    ) -> list[Requirement]:
+    def get_dependencies(
+    self,
+    package_name: str,
+    version: str,
+    extras: set[str] | None = None
+) -> list[Requirement]:
 
         metadata = self.get_release_metadata(
             package_name,
             version
-        ) # 전체 메타데이터 가져오기
+        )
 
         requires_dist = metadata.get("info", {}).get(
             "requires_dist"
-        ) or [] # PyPI 메타데이터에서 의존성 목록이 들은 dist 추출
+        ) or []
 
-        dependencies = [] # 파싱된 requirements 객체들 리스트 초기화
+        dependencies = []
 
-        for requirement_string in requires_dist: # 의존성 문자열 순회
+        # 선택된 extra가 없으면 기본 의존성만 분석
+        selected_extras = set(extras or set())
+
+        # 기본 설치 환경과 선택된 extra 환경을 각각 평가
+        environments = [""] + sorted(selected_extras)
+
+        for requirement_string in requires_dist:
             try:
-                requirement = Requirement(
-                    requirement_string # PEP 508 규격에 맞는 객체 파싱 후 리스트 추가
-                )
+                requirement = Requirement(requirement_string)
+
+                if requirement.marker is not None:
+                # 하나 이상의 환경에서 조건을 만족해야 포함
+                    if not any(
+                        requirement.marker.evaluate(
+                            environment={"extra": extra}
+                        )
+                        for extra in environments
+                    ):
+                        continue
+
                 dependencies.append(requirement)
-                # 필요하지 않은 dependency까지 SBOM에 들어갈 수도 있긴 함
-                # 분석 정책 필요: 현재 실행 환경 기준 평가 or dev dependency
 
             except Exception:
-                # 해석할 수 없는 dependency는 일단 무시
-                # 예외처리 작업중 )) 어떤 오류든 조용히 무시함
-                # but Client는 따로 노드 생성 안함
-                # 유효하지 않은 requires_dist dependency는 아직 무시하기로
                 continue
 
-        return dependencies # 하위 의존성 객체 리스트 반환
+        return dependencies

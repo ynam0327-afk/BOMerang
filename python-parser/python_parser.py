@@ -25,7 +25,14 @@ class PythonParser:
 
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
-        
+
+    def _is_applicable(self, requirement) -> bool:
+        """현재 실행 환경에서 적용되는 의존성인지 확인한다."""
+        if requirement.marker is None:
+            return True
+
+        return requirement.marker.evaluate({"extra": ""})
+    
     def supports(self, file_name: str) -> bool:
         return Path(file_name).name in {
         "requirements.txt",
@@ -64,6 +71,9 @@ class PythonParser:
             requirements = parse_pyproject(str(file_path))
 
             for requirement, scope in requirements:
+                if not self._is_applicable(requirement):
+                    continue
+
                 self._parse_package(
                     requirement,
                     file_path,
@@ -101,6 +111,8 @@ class PythonParser:
 
                 # 패키지
                 elif result_type == "package":
+                    if not self._is_applicable(value):
+                        continue
 
                     self._parse_package(
                         value,
@@ -192,12 +204,17 @@ class PythonParser:
 
         try:
             # 5. PyPI에서 해당 패키지의 dependency 조회
+            print(f"[DEBUG] 의존성 조회: {name}=={resolved_version}", flush=True)
+            
             dependencies = self.pypi_client.get_dependencies(
                 name,
-                resolved_version
+                resolved_version,
+                extras=set(requirement.extras)
             )        
 
             for dependency in dependencies:
+                if not self._is_applicable(dependency):
+                    continue
                 # get_dependencies()가 반환한 의존성마다
                 # 하위 의존성 버전 조회(1회)
                 dependency_resolution_error = None
@@ -262,7 +279,7 @@ class PythonParser:
 
             specifier = specifiers[0]
 
-            if specifier.operator == "==":
+            if specifier.operator == "==" and not specifier.version.endswith(".*") :
                 return specifier.version
 
         return None

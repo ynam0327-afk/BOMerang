@@ -22,7 +22,7 @@ class FakePyPIClient:
             "3.0.0",
         ]
 
-    def get_dependencies(self, package_name, version):
+    def get_dependencies(self, package_name, version, extras=None):
         key = (package_name.lower(), version)
 
         self.call_count[key] = self.call_count.get(key, 0) + 1

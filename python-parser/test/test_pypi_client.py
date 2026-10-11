@@ -1,5 +1,5 @@
 from pypi_client import PyPIClient
-
+from packaging.requirements import Requirement
 
 def test_get_dependencies(monkeypatch):
 
@@ -44,3 +44,27 @@ def test_get_dependencies(monkeypatch):
     assert "certifi" in names
     assert "idna" in names
     assert "charset-normalizer" in names
+
+def test_get_dependencies_filters_environment_markers():
+    client = PyPIClient()
+
+    client.get_release_metadata = lambda package_name, version: {
+        "info": {
+            "requires_dist": [
+                "requests",
+                "win-only; sys_platform == 'win32'",
+                "linux-only; sys_platform == 'linux'",
+            ]
+        }
+    }
+
+    dependencies = client.get_dependencies("test-package", "1.0.0")
+    names = [str(req.name) for req in dependencies]
+
+    assert "requests" in names
+    assert ("win-only" in names) == (
+        __import__("sys").platform == "win32"
+    )
+    assert ("linux-only" in names) == (
+        __import__("sys").platform.startswith("linux")
+    )

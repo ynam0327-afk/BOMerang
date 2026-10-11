@@ -2,7 +2,7 @@ from python_parser import PythonParser
 
 class FakePyPIClient:
 
-    def get_dependencies(self, package_name, version):
+    def get_dependencies(self, package_name, version, extras=None):
         return []
 
     # 임시 조치

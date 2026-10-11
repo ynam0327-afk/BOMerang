@@ -5,7 +5,7 @@ class FakePyPIClient:
     def get_available_versions(self, package_name):
         raise RuntimeError("PyPI connection failed")
 
-    def get_dependencies(self, package_name, version):
+    def get_dependencies(self, package_name, version, extras=None):
         raise RuntimeError("PyPI connection failed")
 
 
@@ -40,7 +40,7 @@ def test_dependency_purl_matches_actual_node(tmp_path):
         def get_available_versions(self, package_name):
             return ["2.0.0", "2.2.0"]
 
-        def get_dependencies(self, package_name, version):
+        def get_dependencies(self, package_name, version, extras=None):
             if package_name == "requests":
                 from packaging.requirements import Requirement
                 return [Requirement("urllib3>=2.0")]
