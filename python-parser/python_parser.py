@@ -1,5 +1,7 @@
 from packaging.version import Version
+from packaging.specifiers import SpecifierSet
 from pathlib import Path
+import sys
 
 from toml_parser import parse_pyproject
 
@@ -25,6 +27,8 @@ class PythonParser:
 
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
+        self._declared_exact_versions = {}
+        # 확정 버전 저장 공간
 
     def _is_applicable(self, requirement) -> bool:
         """현재 실행 환경에서 적용되는 의존성인지 확인한다."""
@@ -39,10 +43,67 @@ class PythonParser:
         "pyproject.toml"
     }# 2차 : requirements.txt + toml 지원
 
+    def _collect_declared_versions(
+            self,
+            file_path: Path,
+            visited_files: set,
+    ):
+        file_path = file_path.resolve()
+        if file_path in visited_files:
+            return
+
+        visited_files.add(file_path)
+
+        if file_path.name == "pyproject.toml":
+            requirements = parse_pyproject(str(file_path))
+
+            for requirement, _scope in requirements:
+                if not self._is_applicable(requirement):
+                    continue
+
+                version = self._get_resolved_version(requirement)
+
+                if version is not None:
+                    name = requirement.name.lower().replace("_", "-")
+                    self._declared_exact_versions.setdefault(name, set()).add(version)
+
+            return
+
+        with file_path.open("r", encoding="utf-8") as files:
+            for line in files:
+                result = parse_requirement(line)
+
+                if result is None:
+                    continue
+
+                result_type, value = result
+                if result_type == "file":
+                    referenced_file = (file_path.parent / value).resolve()
+
+                    self._collect_declared_versions(
+                        referenced_file,
+                        visited_files,
+                    )
+
+                elif result_type == "package":
+                    if not self._is_applicable(value):
+                        continue
+                    version = self._get_resolved_version(value)
+
+                    if version is not None:
+                        name = value.name.lower().replace("_", "-")
+                        self._declared_exact_versions.setdefault(name, set()).add(version)
+
     def parse(self, file_path: str) -> list[DependencyNode]:
+        self._declared_exact_versions = {}
+
+        self._collect_declared_versions(
+            Path(file_path).resolve(),
+            set()
+        )
+       
         visited_files = set() # 파일 순환 참조 방지 (!= 패키지 순환)
         nodes = {} # 최종 DependencyNode 저장
-
         expanded_nodes = set()
         
         self._parse_file(
@@ -51,6 +112,8 @@ class PythonParser:
             nodes,
             expanded_nodes
         )
+
+        self._merge_unresolved_nodes(nodes)
 
         return list(nodes.values())
 
@@ -204,7 +267,7 @@ class PythonParser:
 
         try:
             # 5. PyPI에서 해당 패키지의 dependency 조회
-            print(f"[DEBUG] 의존성 조회: {name}=={resolved_version}", flush=True)
+            print(f"[DEBUG] 의존성 조회: {name}=={resolved_version}", file=sys.stderr,flush=True)
             
             dependencies = self.pypi_client.get_dependencies(
                 name,
@@ -220,15 +283,17 @@ class PythonParser:
                 dependency_resolution_error = None
 
                 try:
-                    dependency_resolved_version = self._resolve_version(dependency)
+                    dependency_resolved_version, dependency_resolution_error = (
+                        self._resolve_transitive_version(dependency)
+                    )
                 except RuntimeError as e:
                     dependency_resolved_version = None
                     dependency_resolution_error = e
 
                 # 실제 선택된 버전 기준 PURL 생성
                 dependency_purl = make_purl(
-                dependency.name,
-                dependency_resolved_version
+                    dependency.name,
+                    dependency_resolved_version,
                 )
 
                 # 현재 Node에 dependency PURL 추가
@@ -263,6 +328,73 @@ class PythonParser:
         finally:
             recursion_stack.remove(purl) # 재귀가 끝나면 스택에서 제거
             expanded_nodes.add(purl) # 하위 의존성 탐색 완료
+
+    # 후처리 함수 - 버전 없는 노드를 확정 버전 노드와 통합(안전할때만)
+    def _merge_unresolved_nodes(self, nodes):
+    
+        versioned_by_name = {}
+            # 패키지 이름별로 확인된 버전을 수집한다.
+        for purl, node in nodes.items():
+            if node.resolved_version is None:
+                continue
+
+            name = node.name.lower().replace("_", "-")
+            versioned_by_name.setdefault(name, {})[
+                    node.resolved_version
+            ] = purl
+        
+        remap = {}
+
+        # 같은 이름의 확정 버전이 하나뿐인 경우에만 통합 후보로 등록한다.
+        for purl, node in nodes.items():
+            if node.resolved_version is not None:
+                continue
+            name = node.name.lower().replace("_", "-")
+            candidates = versioned_by_name.get(name, {})
+
+            if len(candidates) != 1:
+                continue
+
+            version, target_purl = next(iter(candidates.items()))
+
+            # 기존 버전 조건이 있다면 후보 버전이 조건을 만족해야 한다.
+            if node.declared_version:
+                try:
+                    if not SpecifierSet(node.declared_version).contains(
+                        Version(version),
+                        prereleases=False,
+                    ):
+                        continue
+                except Exception:
+                    continue
+
+            remap[purl] = target_purl
+        if not remap:
+            return
+
+        # 모든 노드의 의존성 참조를 새 PURL로 변경한다.
+        for node in nodes.values():
+            node.dependencies = list(dict.fromkeys(
+                remap.get(dep, dep)
+                for dep in node.dependencies
+            ))
+
+        # 기존 노드의 일부 정보도 대상 노드에 반영한다.
+        for old_purl, target_purl in remap.items():
+            old_node = nodes[old_purl]
+            target_node = nodes[target_purl]
+
+            target_node.depth = min(
+                target_node.depth,
+                old_node.depth,
+            )
+            target_node.dependencies = list(dict.fromkeys(
+                target_node.dependencies + old_node.dependencies
+            ))
+            target_node.is_circular = (
+                target_node.is_circular or old_node.is_circular
+            )
+            del nodes[old_purl]
 
     def _get_declared_version(self, requirement):
 
@@ -321,3 +453,40 @@ class PythonParser:
             return None
 
         return str(max(candidates)) # 버전 범위 중 가장 최신 버전
+
+    def _resolve_transitive_version(self, requirement):
+        name = requirement.name.lower().replace("_", "-")
+        pinned_versions = self._declared_exact_versions.get(name, set())
+
+        # 직접 의존성의 정확한 버전이 없으면 기존 로직 사용
+        if not pinned_versions:
+            try:
+                return self._resolve_version(requirement), None
+            except RuntimeError as exc:
+                return None, str(exc)
+
+        # 하위 의존성에 버전 조건이 없으면
+        # 직접 의존성의 버전을 재사용한다.
+        if not requirement.specifier:
+            return max(pinned_versions, key=Version), None
+
+        # 직접 의존성의 버전 중 조건을 만족하는 버전만 선택
+        compatible_versions = [
+            version
+            for version in pinned_versions
+            if requirement.specifier.contains(
+                Version(version),
+                prereleases=False,
+            )
+        ]
+
+        # 조건을 만족하는 버전이 없으면 충돌 처리
+        if not compatible_versions:
+            versions = ", ".join(sorted(pinned_versions))
+            return None, (
+                f"No compatible direct dependency version for "
+                f"{name}: {versions}, required {requirement.specifier}"
+            )
+
+        # 호환되는 버전 중 가장 최신 버전 선택
+        return max(compatible_versions, key=Version), None

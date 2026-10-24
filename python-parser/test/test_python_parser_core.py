@@ -330,3 +330,106 @@ def test_prerelease_is_not_selected(tmp_path):
     nodes = parser.parse(str(file))
 
     assert nodes[0].resolved_version == "2.0.0"
+
+
+def test_transitive_dependency_reuses_compatible_direct_version():
+    parser = PythonParser()
+    parser._declared_exact_versions = {
+        "urllib3": {"2.2.1"}
+    }
+
+    version, error = parser._resolve_transitive_version(
+        Requirement("urllib3>=2.0")
+    )
+
+    assert version == "2.2.1"
+    assert error is None
+
+
+def test_transitive_dependency_reports_version_conflict():
+    parser = PythonParser()
+    parser._declared_exact_versions = {
+        "urllib3": {"2.2.1"}
+    }
+
+    version, error = parser._resolve_transitive_version(
+        Requirement("urllib3>=3.0")
+    )
+
+    assert version is None
+    assert error is not None
+    assert "No compatible direct dependency version" in error
+
+
+def test_transitive_dependency_selects_latest_compatible_direct_version():
+    parser = PythonParser()
+    parser._declared_exact_versions = {
+        "urllib3": {"2.1.0", "2.3.0"}
+    }
+
+    version, error = parser._resolve_transitive_version(
+        Requirement("urllib3>=2.0")
+    )
+
+    assert version == "2.3.0"
+    assert error is None
+
+
+def test_transitive_dependency_reuses_direct_version(tmp_path):
+    requirements = tmp_path / "requirements.txt"
+
+    requirements.write_text(
+        "requests==2.32.5\n"
+        "urllib3==2.2.1\n",
+        encoding="utf-8"
+    )
+
+    fake_client = FakePyPIClient({
+        ("requests", "2.32.5"): [
+            Requirement("urllib3>=2.0")
+        ],
+        ("urllib3", "2.2.1"): []
+    })
+
+    parser = PythonParser(pypi_client=fake_client)
+    nodes = parser.parse(str(requirements))
+
+    node_map = {node.purl: node for node in nodes}
+
+    requests_node = node_map["pkg:pypi/requests@2.32.5"]
+
+    assert "pkg:pypi/urllib3@2.2.1" in node_map
+    assert "pkg:pypi/urllib3@2.2.1" in requests_node.dependencies
+
+
+def test_transitive_dependency_conflict_is_unresolved(tmp_path):
+    requirements = tmp_path / "requirements.txt"
+
+    requirements.write_text(
+        "requests==2.32.5\n"
+        "urllib3==2.2.1\n",
+        encoding="utf-8"
+    )
+
+    fake_client = FakePyPIClient({
+        ("requests", "2.32.5"): [
+            Requirement("urllib3>=3.0")
+        ],
+        ("urllib3", "2.2.1"): []
+    })
+
+    parser = PythonParser(pypi_client=fake_client)
+    nodes = parser.parse(str(requirements))
+
+    # 직접 의존성의 버전과 별개로 생성된 미해결 노드 확인
+    unresolved_nodes = [
+        node for node in nodes
+        if node.name == "urllib3"
+        and node.resolved_version is None
+    ]
+
+    assert len(unresolved_nodes) == 1
+    assert unresolved_nodes[0].parse_status == "error"
+    assert "No compatible direct dependency version" in (
+        unresolved_nodes[0].error_message
+    )
