@@ -1,0 +1,24 @@
+[
+  {
+    "ecosystem": "maven",
+    "group": "com.fasterxml.jackson.core",
+    "name": "jackson-core",
+    "declared_version": "[2.18.5,2.18.6]",
+    "resolved_version": "2.18.6",
+    "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-core",
+    "source_file": "range-demo-fixture",
+    "dependencies": [],
+    "version_status": "estimated",
+    "selection_policy": "latest_in_range",
+    "resolution_queried_at": "2026-10-14T05:23:47.981920+00:00",
+    "version_evidence": {
+      "kind": "registry_latest_in_range",
+      "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-core/maven-metadata.xml",
+      "metadata_sha256": "f18699ac5038c27a597312ba5b9b489c17c29c860c13b62fee2a693c4e633cde",
+      "candidate_policy": "numeric_releases_only"
+    },
+    "resolution_error": null,
+    "graph_resolution_status": "requires_rebuild_for_selected_version",
+    "selected_purl": "pkg:maven/com.fasterxml.jackson.core/jackson-core@2.18.6"
+  }
+]
