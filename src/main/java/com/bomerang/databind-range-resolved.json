@@ -1,0 +1,24 @@
+[
+  {
+    "ecosystem": "maven",
+    "group": "com.fasterxml.jackson.core",
+    "name": "jackson-databind",
+    "declared_version": "[2.17.0,2.17.2]",
+    "resolved_version": "2.17.2",
+    "purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind",
+    "source_file": "databind-range-test",
+    "dependencies": [],
+    "version_status": "estimated",
+    "selection_policy": "latest_in_range",
+    "resolution_queried_at": "2026-10-14T05:29:50.609606+00:00",
+    "version_evidence": {
+      "kind": "registry_latest_in_range",
+      "url": "https://repo.maven.apache.org/maven2/com/fasterxml/jackson/core/jackson-databind/maven-metadata.xml",
+      "metadata_sha256": "95c2afbf081029c60358303e529a53d0440d8d35bd2a2907df70bc5eae9e181f",
+      "candidate_policy": "numeric_releases_only"
+    },
+    "resolution_error": null,
+    "graph_resolution_status": "requires_rebuild_for_selected_version",
+    "selected_purl": "pkg:maven/com.fasterxml.jackson.core/jackson-databind@2.17.2"
+  }
+]

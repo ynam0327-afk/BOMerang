@@ -73,6 +73,8 @@ public class JsonDependencyExporter {
             // Identity tracking stops cycles without dropping other objects with the same purl.
             if (!seen.add(node)) continue;
             Entry entry = packages.computeIfAbsent(purl(node), key -> new Entry(node));
+            entry.declaredVersions.add(node.getDeclaredVersion());
+            if ("estimated".equals(node.getVersionStatus())) entry.node = node;
             entry.depth = Math.min(entry.depth, visit.depth);
             entry.scopes.add(node.getScope() == null ? "compile" : node.getScope());
             entry.optionalValues.add(node.isOptional());
@@ -98,7 +100,8 @@ public class JsonDependencyExporter {
     }
 
     private static final class Entry {
-        final DependencyNode node;
+        DependencyNode node;
+        final Set<String> declaredVersions = new TreeSet<>();
         int depth = Integer.MAX_VALUE;
         final Set<String> scopes = new TreeSet<>();
         final Set<Boolean> optionalValues = new TreeSet<>();
@@ -118,8 +121,23 @@ public class JsonDependencyExporter {
             json.append("\"ecosystem\":\"maven\",");
             json.append("\"group\":").append(quote(node.getGroupId())).append(',');
             json.append("\"name\":").append(quote(node.getArtifactId())).append(',');
-            json.append("\"declared_version\":").append(quote(node.getVersion())).append(',');
-            json.append("\"resolved_version\":").append(quote(node.getVersion())).append(',');
+            json.append("\"declared_version\":").append(quote(node.getDeclaredVersion())).append(',');
+            List<String> declaredItems = new ArrayList<>();
+            for (String declared : declaredVersions) declaredItems.add(quote(declared));
+            json.append("\"declared_versions\":[").append(String.join(",", declaredItems)).append("],");
+            json.append("\"graph_resolution_status\":\"attempted_check_resolver_log\",");
+            json.append("\"resolved_version\":").append("unresolved".equals(node.getVersionStatus()) ? "null" : quote(node.getVersion())).append(',');
+            json.append("\"version_status\":").append(quote(node.getVersionStatus())).append(',');
+            json.append("\"resolution_error\":").append(quote(node.getResolutionError())).append(',');
+            json.append("\"selection_policy\":").append("estimated".equals(node.getVersionStatus()) ? quote("latest_in_range") : "null").append(',');
+            json.append("\"resolution_queried_at\":").append(quote(node.getResolutionQueriedAt())).append(',');
+            json.append("\"version_evidence\":");
+            if ("estimated".equals(node.getVersionStatus())) {
+                json.append("{\"kind\":\"registry_latest_in_range\",\"candidate_policy\":\"numeric_releases_only\",\"url\":")
+                    .append(quote(node.getMetadataUrl())).append(",\"metadata_sha256\":").append(quote(node.getMetadataHash())).append("},");
+            } else if ("confirmed".equals(node.getVersionStatus())) {
+                json.append("{\"kind\":\"declared_exact_after_pom_management\",\"source_file\":").append(quote(source)).append("},");
+            } else json.append("null,");
             json.append("\"purl\":").append(quote(purl(node))).append(',');
             json.append("\"depth\":").append(depth).append(',');
             json.append("\"scope\":").append(quote(scope())).append(',');
