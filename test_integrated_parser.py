@@ -19,7 +19,7 @@ class NoNetworkPyPI:
         self.dependencies = dependencies
         self.calls = []
 
-    def get_dependencies(self, name, version):
+    def get_dependencies(self, name, version, extras=None):
         self.calls.append((name, version))
         return self.dependencies
 
@@ -80,7 +80,10 @@ class IntegratedParserTests(unittest.TestCase):
         self.assertEqual({"pom.xml", "requirements.txt"}, set(result["files"]))
 
     def test_02_empty_project(self):
-        self.assertEqual({"files": [], "dependencies": []}, self.result())
+        result=self.result()
+        self.assertEqual([],result["files"])
+        self.assertEqual([],result["dependencies"])
+        self.assertEqual([],result["parser_logs"])
 
     def test_03_empty_pom_and_requirements(self):
         self.pom([])

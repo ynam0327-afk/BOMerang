@@ -259,8 +259,13 @@ class PythonParser:
 
             return
 
-        # 추가: 이미 하위 의존생 탐색을 완료한 패키지인가?
-        if purl in expanded_nodes:
+        # 같은 패키지라도 선택한 extras가 다르면 추가 탐색
+        expansion_key = (
+            purl,
+            frozenset(requirement.extras)
+        )
+
+        if expansion_key in expanded_nodes:
             return
 
         recursion_stack.add(purl) # finally: recursion_stack.remove(purl)
@@ -327,8 +332,8 @@ class PythonParser:
         
         finally:
             recursion_stack.remove(purl) # 재귀가 끝나면 스택에서 제거
-            expanded_nodes.add(purl) # 하위 의존성 탐색 완료
-
+            expanded_nodes.add(expansion_key)
+            
     # 후처리 함수 - 버전 없는 노드를 확정 버전 노드와 통합(안전할때만)
     def _merge_unresolved_nodes(self, nodes):
     
