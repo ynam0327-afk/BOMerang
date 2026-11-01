@@ -19,8 +19,12 @@ atexit.register(close)
 def start():
     global _process,_messages
     if _process is not None and _process.poll() is None:return
-    close();root=Path(__file__).resolve().parent
-    classpath=os.pathsep.join([str(root/'bridge'),str(root/'lib'/'maven-artifact-3.9.9.jar')])
+    close()
+    project_root = Path(__file__).resolve().parent.parent
+    java_root = project_root / "src" / "main" / "java" / "com" / "bomerang"
+    classpath = os.pathsep.join([
+        str(java_root / "bridge"),
+        str(java_root / "lib" / "maven-artifact-3.9.9.jar")])
     try:_process=subprocess.Popen([os.getenv('BOMERANG_JAVA','java'),'-cp',classpath,'MavenComparisonServer'],stdin=subprocess.PIPE,stdout=subprocess.PIPE,stderr=subprocess.DEVNULL,text=True,encoding='utf-8',bufsize=1)
     except OSError as exc:raise ValueError('Java 17+ unavailable: '+str(exc))
     messages=queue.Queue();_messages=messages;process=_process
