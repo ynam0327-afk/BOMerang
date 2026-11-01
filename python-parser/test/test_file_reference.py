@@ -68,3 +68,30 @@ def test_circular_file_reference(tmp_path):
 
     assert "requests" in names
     assert "flask" in names
+
+
+def test_requirements_with_utf8_bom(tmp_path):
+    """UTF-8 BOM이 포함된 requirements.txt를 정상 파싱하는지 검증."""
+
+    requirements = tmp_path / "requirements.txt"
+
+    requirements.write_text(
+        "requests==2.32.5\n",
+        encoding="utf-8-sig"
+    )
+
+    # 외부 PyPI 네트워크 호출 없이 검증
+    class FakePyPIClient:
+        def get_available_versions(self, package_name):
+            return []
+
+        def get_dependencies(self, package_name, version, extras=None):
+            return []
+
+    parser = PythonParser(pypi_client=FakePyPIClient())
+    nodes = parser.parse(str(requirements))
+
+    assert len(nodes) == 1
+    assert nodes[0].name == "requests"
+    assert nodes[0].resolved_version == "2.32.5"
+    assert nodes[0].parse_status == "success"

@@ -122,3 +122,34 @@ def test_05_circular_dependency(tmp_path):
     assert "cycle-a" in nodes
     assert "cycle-b" in nodes
     assert nodes["cycle-a"].is_circular or nodes["cycle-b"].is_circular
+
+
+def test_06_extra_marker_kept_in_full_parser(tmp_path):
+    """PyPI에서 이미 선택된 extra 의존성이 파서에서 제거되지 않는지 확인."""
+
+    from packaging.requirements import Requirement
+
+    class MarkerPyPIClient:
+        def get_available_versions(self, package_name):
+            return ["1.7.1"] if package_name.lower() == "pysocks" else []
+
+        def get_dependencies(self, package_name, version, extras=None):
+            if package_name == "demo-package" and "socks" in (extras or set()):
+                return [
+                    Requirement('PySocks==1.7.1; extra == "socks"')
+                ]
+            return []
+
+    requirements = tmp_path / "requirements.txt"
+    requirements.write_text(
+        "demo-package[socks]==1.0.0\n",
+        encoding="utf-8"
+    )
+
+    parser = PythonParser(pypi_client=MarkerPyPIClient())
+    nodes = parser.parse(str(requirements))
+
+    names = {node.name.lower() for node in nodes}
+
+    assert "demo-package" in names
+    assert "pysocks" in names

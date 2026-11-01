@@ -69,7 +69,7 @@ class PythonParser:
 
             return
 
-        with file_path.open("r", encoding="utf-8") as files:
+        with file_path.open("r", encoding="utf-8-sig") as files:
             for line in files:
                 result = parse_requirement(line)
 
@@ -148,7 +148,7 @@ class PythonParser:
                 )
             return
 
-        with file_path.open("r", encoding="utf-8") as file:
+        with file_path.open("r", encoding="utf-8-sig") as file:
             for line in file:
 
                 result = parse_requirement(line)
@@ -281,10 +281,9 @@ class PythonParser:
             )        
 
             for dependency in dependencies:
-                if not self._is_applicable(dependency):
-                    continue
-                # get_dependencies()가 반환한 의존성마다
-                # 하위 의존성 버전 조회(1회)
+                # PyPIClient.get_dependencies()에서 이미
+                # Environment Marker와 extras 조건을 평가했으므로
+                # 여기서 다시 필터링하지 않는다.
                 dependency_resolution_error = None
 
                 try:
@@ -333,7 +332,7 @@ class PythonParser:
         finally:
             recursion_stack.remove(purl) # 재귀가 끝나면 스택에서 제거
             expanded_nodes.add(expansion_key)
-            
+
     # 후처리 함수 - 버전 없는 노드를 확정 버전 노드와 통합(안전할때만)
     def _merge_unresolved_nodes(self, nodes):
     
