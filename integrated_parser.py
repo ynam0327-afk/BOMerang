@@ -50,8 +50,10 @@ def main():
     p.add_argument('--exclude-dir',action='append',default=[],help='Exclude a directory name at any depth')
     p.add_argument('--security-output',type=Path,help='Write graph, OSV, normalization, matching and priority results here')
     p.add_argument('--nvd',action='store_true',help='Enrich OSV CVE IDs with NVD metadata; requires --security-output')
+    p.add_argument('--cyclonedx',action='store_true',help='Generate CycloneDX SBOM; requires --security-output')
     args=p.parse_args()
     if args.nvd and args.security_output is None:p.error('--nvd requires --security-output')
+    if args.cyclonedx and args.security_output is None:p.error('--cyclonedx requires --security-output')
     graph=analyze(args.project_dir,args.java_classes,resolve_maven=args.resolve_maven,exclude_dirs=args.exclude_dir)
     if args.security_output is not None:
         from integrated_security import pipeline
@@ -61,6 +63,12 @@ def main():
         write('graph.json',graph);write('packages.json',graph['dependencies'])
         scanned,normalized,matched,priority=pipeline(graph['dependencies'],Client(),args.nvd)
         for name,data in [('scan.json',scanned),('normalized.json',normalized),('matched.json',matched),('priority.json',priority)]:write(name,data)
+        if args.cyclonedx:
+            from security_sbom_adapter import to_cyclonedx_risk
+            from cyclonedx_converter import convert_to_cyclonedx
+            risk_data = to_cyclonedx_risk(priority)
+            bom = convert_to_cyclonedx(graph,risk_result=risk_data,)
+            write('bom.cdx.json', bom)
         graph['security_output']=str(out)
     print(json.dumps(graph,ensure_ascii=False,indent=2))
 if __name__=='__main__':main()
