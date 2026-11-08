@@ -35,6 +35,21 @@ class Client:
         for _ in range(100):
             data=self.request('https://api.osv.dev/v1/query',q); page=data.get('vulns',[])
             if not isinstance(page,list) or any(not isinstance(v,dict) or not v.get('id') for v in page):raise ValueError('Malformed OSV response')
+            for record in page:
+                if not isinstance(record['id'],str) or not isinstance(record.get('aliases',[]),list) or any(not isinstance(a,str) for a in record.get('aliases',[])):
+                    raise ValueError('Malformed OSV response: invalid ID or aliases')
+                affected=record.get('affected',[])
+                if not isinstance(affected,list) or any(not isinstance(a,dict) for a in affected):
+                    raise ValueError('Malformed OSV response: affected must be object array')
+                for entry in affected:
+                    if not isinstance(entry.get('package',{}),dict) or not isinstance(entry.get('ranges',[]),list) or not isinstance(entry.get('versions',[]),list):
+                        raise ValueError('Malformed OSV response: invalid affected entry')
+                    coordinates=entry.get('package',{})
+                    if any(key in coordinates and not isinstance(coordinates[key],str) for key in ('name','ecosystem')):
+                        raise ValueError('Malformed OSV response: invalid package coordinates')
+                    for rg in entry.get('ranges',[]):
+                        if not isinstance(rg,dict) or not isinstance(rg.get('events',[]),list) or any(not isinstance(e,dict) for e in rg.get('events',[])):
+                            raise ValueError('Malformed OSV response: invalid range events')
             records.extend(page); token=data.get('next_page_token')
             if not token:return records
             if token in tokens:raise ValueError('Repeated page token')
@@ -48,6 +63,17 @@ class Client:
             self.last_nvd=time.monotonic()
         data=self.request(url,headers={'apiKey':os.environ['NVD_API_KEY']} if os.getenv('NVD_API_KEY') else {})
         if not isinstance(data.get('vulnerabilities'),list):raise ValueError('Malformed NVD response')
+        for wrapper in data['vulnerabilities']:
+            if not isinstance(wrapper,dict) or not isinstance(wrapper.get('cve'),dict) or wrapper['cve'].get('id')!=cve:
+                raise ValueError('NVD CVE identity mismatch or malformed record')
+            record=wrapper['cve'];metrics=record.get('metrics',{})
+            if not isinstance(metrics,dict) or not isinstance(record.get('descriptions',[]),list):
+                raise ValueError('Malformed NVD metadata')
+            if any(not isinstance(d,dict) or not isinstance(d.get('lang'),str) or not isinstance(d.get('value'),str) for d in record.get('descriptions',[])):
+                raise ValueError('Malformed NVD descriptions')
+            for values in metrics.values():
+                if not isinstance(values,list) or any(not isinstance(v,dict) or not isinstance(v.get('cvssData',{}),dict) for v in values):
+                    raise ValueError('Malformed NVD metrics')
         return data['vulnerabilities']
 
 def scan(packages,client,enrich=False):

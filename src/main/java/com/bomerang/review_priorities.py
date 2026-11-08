@@ -2,7 +2,14 @@
 import argparse,csv,json
 from itertools import combinations
 from pathlib import Path
-from risk_model import score_document
+# The sibling scorer is a preserved legacy experiment. Use the production
+# team's model explicitly, independent of sys.path and the invoking directory.
+import importlib.util
+_team_model_path=Path(__file__).resolve().parents[5]/'python-security-integration'/'risk_model.py'
+_team_spec=importlib.util.spec_from_file_location('bomerang_team_priority',_team_model_path)
+_team_model=importlib.util.module_from_spec(_team_spec)
+_team_spec.loader.exec_module(_team_model)
+score_document=_team_model.score_document
 
 def identity(row):return (row['package_purl'],row['vulnerability_id'])
 def compare_rankings(base,other):
@@ -19,7 +26,7 @@ def compare_rankings(base,other):
 def build(document):
     scenarios={}
     for name,depth in [('cvss_baseline',0),('depth10_experiment',0.1),('depth20_experiment',0.2)]:
-        scenarios[name]=score_document(document,{'cvss_weight':1-depth,'depth_weight':depth,'team_approved':False})
+        scenarios[name]=score_document(document,{'cvss_weight':1-depth,'depth_weight':depth,'team_approved':depth==0})
     indexes={name:{identity(r):r for r in value['priority_ranking']} for name,value in scenarios.items()}
     checklist=[]
     for row in document['results']:
@@ -39,7 +46,7 @@ def build(document):
                     'Check vulnerable API or feature use in project code.',
                     'Check required settings, packaging, JDK and external input paths.',
                     'Record file/line or command evidence; absent evidence is not proof of non-applicability.']})
-    return {'policy':'CVSS baseline for review; depth-weighted scores remain experiments pending team agreement.',
+    return {'policy':'Team-approved CVSS-only baseline; depth-weighted scenarios remain separate experiments.',
             'scope_note':'Numerical ranking stability is not validation of actual exploitation risk.',
             'counts':{'vulnerability_package_pairs':len(checklist),'application_unreviewed':len(checklist)},
             'scenario_summaries':{n:v['priority_summary'] for n,v in scenarios.items()},

@@ -1,0 +1,485 @@
+{
+  "schema_version": 1,
+  "data_kind": "SYNTHETIC TEST DATA. CVE-2099 IDs and OSV records are invented fixtures, not real vulnerability claims.",
+  "osv": {
+    "PyPI|shared": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-SHARED",
+          "aliases": [
+            "CVE-2099-50001"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "shared"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        },
+        {
+          "id": "GHSA-step-five-test",
+          "aliases": [
+            "CVE-2099-50001"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "shared"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "Maven|org.example:shared": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-MAVEN-SHARED",
+          "aliases": [
+            "CVE-2099-50001"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "Maven",
+                "name": "org.example:shared"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "Maven|org.other:shared": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-WRONG-PACKAGE",
+          "aliases": [
+            "CVE-2099-50001"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "Maven",
+                "name": "org.example:shared"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "PyPI|py-runtime": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-ESTIMATED",
+          "aliases": [
+            "CVE-2099-50002"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "py-runtime"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.5"
+                    },
+                    {
+                      "last_affected": "1.5"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "PyPI|py-parent": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-PATCHED",
+          "aliases": [
+            "CVE-2099-50005"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "py-parent"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "0"
+                    },
+                    {
+                      "fixed": "1.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "PyPI|py-child": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-NO-CVSS",
+          "aliases": [
+            "CVE-2099-50003"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "py-child"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "PyPI|py-leaf": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-NVD-FAILURE",
+          "aliases": [
+            "CVE-2099-50004"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "PyPI",
+                "name": "py-leaf"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    },
+    "Maven|org.example:managed-lib": {
+      "vulns": [
+        {
+          "id": "OSV-STEP5-MAVEN-PATCHED",
+          "aliases": [
+            "CVE-2099-50006"
+          ],
+          "summary": "SYNTHETIC STEP 5 TEST DATA - not a real vulnerability",
+          "affected": [
+            {
+              "package": {
+                "ecosystem": "Maven",
+                "name": "org.example:managed-lib"
+              },
+              "ranges": [
+                {
+                  "type": "ECOSYSTEM",
+                  "events": [
+                    {
+                      "introduced": "1.0"
+                    },
+                    {
+                      "fixed": "2.0"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "references": [
+            {
+              "type": "WEB",
+              "url": "https://example.invalid/bomerang-step5-synthetic"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "osv_failures": {
+    "Maven|org.example:java-parent": "synthetic OSV lookup failure"
+  },
+  "osv_malformed": {
+    "Maven|org.example:gradle-provided": {
+      "vulns": "invalid fixture response"
+    }
+  },
+  "nvd": {
+    "CVE-2099-50001": {
+      "vulnerabilities": [
+        {
+          "cve": {
+            "id": "CVE-2099-50001",
+            "descriptions": [
+              {
+                "lang": "en",
+                "value": "SYNTHETIC NVD metadata for offline testing only"
+              }
+            ],
+            "metrics": {
+              "cvssMetricV31": [
+                {
+                  "source": "nvd@nist.gov",
+                  "type": "Primary",
+                  "cvssData": {
+                    "version": "3.1",
+                    "baseScore": 7.5,
+                    "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CVE-2099-50002": {
+      "vulnerabilities": [
+        {
+          "cve": {
+            "id": "CVE-2099-50002",
+            "descriptions": [
+              {
+                "lang": "en",
+                "value": "SYNTHETIC NVD metadata for offline testing only"
+              }
+            ],
+            "metrics": {
+              "cvssMetricV31": [
+                {
+                  "source": "nvd@nist.gov",
+                  "type": "Primary",
+                  "cvssData": {
+                    "version": "3.1",
+                    "baseScore": 8.1,
+                    "vectorString": "CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:N"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CVE-2099-50003": {
+      "vulnerabilities": [
+        {
+          "cve": {
+            "id": "CVE-2099-50003",
+            "descriptions": [
+              {
+                "lang": "en",
+                "value": "SYNTHETIC NVD metadata for offline testing only"
+              }
+            ],
+            "metrics": {}
+          }
+        }
+      ]
+    },
+    "CVE-2099-50005": {
+      "vulnerabilities": [
+        {
+          "cve": {
+            "id": "CVE-2099-50005",
+            "descriptions": [
+              {
+                "lang": "en",
+                "value": "SYNTHETIC NVD metadata for offline testing only"
+              }
+            ],
+            "metrics": {
+              "cvssMetricV31": [
+                {
+                  "source": "nvd@nist.gov",
+                  "type": "Primary",
+                  "cvssData": {
+                    "version": "3.1",
+                    "baseScore": 5,
+                    "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "CVE-2099-50006": {
+      "vulnerabilities": [
+        {
+          "cve": {
+            "id": "CVE-2099-50006",
+            "descriptions": [
+              {
+                "lang": "en",
+                "value": "SYNTHETIC NVD metadata for offline testing only"
+              }
+            ],
+            "metrics": {
+              "cvssMetricV31": [
+                {
+                  "source": "nvd@nist.gov",
+                  "type": "Primary",
+                  "cvssData": {
+                    "version": "3.1",
+                    "baseScore": 5,
+                    "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "nvd_failures": {
+    "CVE-2099-50004": "synthetic NVD lookup failure"
+  }
+}

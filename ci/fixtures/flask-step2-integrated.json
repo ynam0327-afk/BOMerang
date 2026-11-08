@@ -1,0 +1,335 @@
+{
+  "files": [
+    "pyproject.toml"
+  ],
+  "dependencies": [
+    {
+      "name": "blinker",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=1.9.0",
+      "resolved_version": null,
+      "purl": "pkg:pypi/blinker",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313837+00:00",
+      "version_observations": [
+        {
+          "name": "blinker",
+          "declared_version": ">=1.9.0",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/blinker/json",
+            "queried_at": "2026-11-06T15:38:51.313837+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313837+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=1.9.0"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "click",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=8.1.3",
+      "resolved_version": null,
+      "purl": "pkg:pypi/click",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313907+00:00",
+      "version_observations": [
+        {
+          "name": "click",
+          "declared_version": ">=8.1.3",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/click/json",
+            "queried_at": "2026-11-06T15:38:51.313907+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313907+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=8.1.3"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "itsdangerous",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=2.2.0",
+      "resolved_version": null,
+      "purl": "pkg:pypi/itsdangerous",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313961+00:00",
+      "version_observations": [
+        {
+          "name": "itsdangerous",
+          "declared_version": ">=2.2.0",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/itsdangerous/json",
+            "queried_at": "2026-11-06T15:38:51.313961+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313961+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=2.2.0"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "jinja2",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=3.1.2",
+      "resolved_version": null,
+      "purl": "pkg:pypi/jinja2",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313977+00:00",
+      "version_observations": [
+        {
+          "name": "jinja2",
+          "declared_version": ">=3.1.2",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/jinja2/json",
+            "queried_at": "2026-11-06T15:38:51.313977+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313977+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=3.1.2"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "markupsafe",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=2.1.1",
+      "resolved_version": null,
+      "purl": "pkg:pypi/markupsafe",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313989+00:00",
+      "version_observations": [
+        {
+          "name": "markupsafe",
+          "declared_version": ">=2.1.1",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/markupsafe/json",
+            "queried_at": "2026-11-06T15:38:51.313989+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313989+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=2.1.1"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "werkzeug",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": ">=3.1.0",
+      "resolved_version": null,
+      "purl": "pkg:pypi/werkzeug",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "version_status": "unresolved",
+      "selection_policy": null,
+      "version_evidence": null,
+      "resolution_queried_at": "2026-11-06T15:38:51.313999+00:00",
+      "version_observations": [
+        {
+          "name": "werkzeug",
+          "declared_version": ">=3.1.0",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "pyproject.toml",
+            "url": "offline://registry-disabled/werkzeug/json",
+            "queried_at": "2026-11-06T15:38:51.313999+00:00",
+            "candidate_list_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "resolution_queried_at": "2026-11-06T15:38:51.313999+00:00"
+        }
+      ],
+      "declared_versions": [
+        ">=3.1.0"
+      ],
+      "source_files": [
+        "pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    }
+  ],
+  "parser_logs": [],
+  "python_marker_environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.14.3",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26300",
+    "python_full_version": "3.14.3",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.14",
+    "sys_platform": "win32"
+  },
+  "analysis_notes": [
+    "Current-environment Python markers; not a whole-project version solver.",
+    "Java BOM/scope/exclusion behavior follows existing exporter.",
+    "Root constraints and Python extras merging retain original parser limitations."
+  ],
+  "evaluation_provenance": {
+    "entrypoint": "integrated_parser.py",
+    "modules": {
+      "integrated_parser": {
+        "path": "integrated_parser.py",
+        "sha256": "6b6e924625cc36c11bf1725680d2649afa1a60d297fad8536e62d6b4d624d5eb"
+      },
+      "python_parser": {
+        "path": "python-parser/python_parser.py",
+        "sha256": "9b7b3f3b1407d4452c9ed0432097c9cd17a724605cd7099dec2bcb956be1d2d7"
+      },
+      "python_security_adapter": {
+        "path": "python-security-integration/python_security_adapter.py",
+        "sha256": "e49f313e754b72c0ded11adbd14c7a9fd28fc92fa4bc24c824c4d2a86930eeb5"
+      },
+      "pypi_client": {
+        "path": "python-parser/pypi_client.py",
+        "sha256": "6fdb1a89d5be57af0c2c477f578b0b56cf74a5702a716de251c7c6dccfb369ca"
+      },
+      "toml_parser": {
+        "path": "python-parser/toml_parser.py",
+        "sha256": "1644feb15cfddb0f7143e69cb1607c61ae36c3df8f141b89046aadfd7c677963"
+      },
+      "requirement_parser": {
+        "path": "python-parser/requirement_parser.py",
+        "sha256": "238b871c2e8b96e67960b47ae81a25dfd7de5fb9ab6eb552615483a5bd295c9e"
+      }
+    },
+    "network": "disabled: injected DeclarationOnlyPyPI; Python files only",
+    "resolution_policy": "ranges unresolved; exact declarations retained; no transitive metadata",
+    "runtime": {
+      "python": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+      "executable": "python.exe",
+      "platform": "Windows-11-10.0.26300-SP0"
+    },
+    "source_root": "accuracy-tests/sources/flask",
+    "source_validation": "SHA256 verified declared files; not a full checkout verification"
+  },
+  "publication_note": "Path-normalized test fixture copy. Original results preserved locally. Package/version/declaration/matching data unchanged."
+}

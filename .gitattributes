@@ -1,0 +1,5 @@
+# Preserve byte-pinned evaluation inputs across Git line-ending settings
+accuracy-tests/sources/flask/* -text
+accuracy-tests/gold/*.json -text whitespace=cr-at-eol
+accuracy-tests/repository_cases.json -text whitespace=cr-at-eol
+security-fixtures/step5/schema/*.schema.json -text

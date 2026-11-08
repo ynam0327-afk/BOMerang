@@ -75,7 +75,8 @@ def _component(node: dict[str, Any]) -> dict[str, Any]:
     # directly, including the original scope and optional-dependency fields.
     for key in ("ecosystem", "declared_version", "source_file", "depth",
                 "parse_status", "error_message", "is_circular",
-                "scope", "scopes", "optional", "optional_values"):
+                "scope", "scopes", "optional", "optional_values",
+                "version_status", "selection_policy", "version_evidence"):
         prop = _property(key, node.get(key))
         if prop is not None and (node.get(key) != "" or isinstance(node.get(key), (list, dict))):
             properties.append(prop)
@@ -134,6 +135,7 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
         raise ValueError("risk JSON 'packages' must be a list")
 
     vulnerabilities: dict[str, dict[str, Any]] = {}
+    assessments_by_id = {}
     for package in packages:
         if not isinstance(package, dict):
             continue
@@ -154,6 +156,12 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
             })
             if purl in component_refs and not any(a.get("ref") == purl for a in vuln["affects"]):
                 vuln["affects"].append({"ref": purl})
+
+            assessment = {**finding, "purl": purl,
+                          "priority_status": finding.get("priority_status", finding.get("status"))}
+            assessments = assessments_by_id.setdefault(vuln_id, [])
+            if assessment not in assessments:
+                assessments.append(assessment)
 
             score = finding.get("cvss_score")
             vector = finding.get("cvss_vector")
@@ -195,6 +203,8 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
                     p["name"] == "bomerang:review_status" for p in vuln["properties"]
                 ) else None
 
+    for identifier, assessments in assessments_by_id.items():
+        vulnerabilities[identifier]["properties"].append(_property("package_assessments", assessments))
     return sorted(vulnerabilities.values(), key=lambda item: item["id"])
 
 
@@ -221,7 +231,14 @@ def convert_to_cyclonedx(
         if not isinstance(purl, str) or not purl:
             raise ValueError(f"Dependency node is missing a usable PURL: {node!r}")
         # Match integrated_parser's PURL-based deduplication behavior.
-        nodes_by_ref.setdefault(purl, node)
+        if purl not in nodes_by_ref:
+            nodes_by_ref[purl] = dict(node)
+        else:
+            existing_refs = nodes_by_ref[purl].get("dependencies") or []
+            added_refs = node.get("dependencies") or []
+            if not isinstance(existing_refs, list) or not isinstance(added_refs, list):
+                raise ValueError(f"'dependencies' for {purl} must be a list")
+            nodes_by_ref[purl]["dependencies"] = existing_refs + added_refs
 
     components = [_component(node) for node in nodes_by_ref.values()]
     dependencies = []
@@ -267,6 +284,8 @@ def convert_to_cyclonedx(
         "components": components,
         "dependencies": dependencies,
     }
+    if risk_result and risk_result.get("priority_model"):
+        bom["metadata"]["properties"].append(_property("priority_model", risk_result["priority_model"]))
     vulnerabilities = _convert_vulnerabilities(risk_result, set(nodes_by_ref))
     if vulnerabilities:
         bom["vulnerabilities"] = vulnerabilities

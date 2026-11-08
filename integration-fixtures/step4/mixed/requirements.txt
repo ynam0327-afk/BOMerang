@@ -1,0 +1,4 @@
+shared==1.0
+-r base.txt
+py-parent==1.0
+legacy; python_version < "2"

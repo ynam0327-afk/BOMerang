@@ -7,7 +7,7 @@ from packaging.version import Version
 
 def now():return datetime.now(timezone.utc).isoformat()
 
-def parse_python_file(path,client=None):
+def parse_python_file(path,client=None,*,metadata=None):
     from python_parser import PythonParser
     from pypi_client import PyPIClient
     class RecordingClient:
@@ -56,18 +56,50 @@ def parse_python_file(path,client=None):
         row['resolution_error']=node.error_message if node.resolved_version is None else None
         row['parser_error']=node.error_message
         rows.append(row)
+    if metadata is not None:
+        metadata.update(
+            declarations=getattr(parser, "declarations", []),
+            declaration_packages=getattr(parser, "declaration_packages", []),
+            declaration_errors=getattr(parser, "declaration_errors", []))
     return rows
+
+
+def merge_declarations(rows):
+    """Deduplicate repeated traversal, preserving separate source occurrences."""
+    merged = {}
+    for row in rows:
+        key = row.get("declaration_id") or json.dumps(row, sort_keys=True)
+        merged.setdefault(key, row)
+    return list(merged.values())
+
 
 def merge_packages(rows):
     merged={}
     for row in rows:
         key=row['purl']
-        if key not in merged:merged[key]=dict(row);continue
+        if key not in merged:
+            merged[key]=dict(row)
+            merged[key]['declarations']=merge_declarations(row.get('declarations',[]))
+            continue
         old=merged[key]
+        old['declarations']=merge_declarations(old.get('declarations',[])+row.get('declarations',[]))
         old['dependencies']=sorted(set(old.get('dependencies',[]))|set(row.get('dependencies',[])))
         old['depth']=min(old.get('depth',1),row.get('depth',1))
         old['source_files']=sorted(set(old.get('source_files',[old.get('source_file')]))|set(row.get('source_files',[row.get('source_file')])),key=lambda x:x or '')
         old['scopes']=sorted({s for s in [*old.get('scopes',[old.get('scope')]),*row.get('scopes',[row.get('scope')])] if s})
+        if 'declared_versions' in old or 'declared_versions' in row:
+            old['declared_versions']=sorted(set(old.get('declared_versions',[]))|set(row.get('declared_versions',[])))
+        if str(old.get('ecosystem','')).lower()=='maven':
+            # Match JsonDependencyExporter: scopes and optional_values are
+            # authoritative across all observed paths, not just the first file.
+            old['scope']=next((scope for scope in ('compile','runtime','provided','system','test')
+                               if scope in old['scopes']),old.get('scope'))
+            optional_values=[*old.get('optional_values',[]),*row.get('optional_values',[])]
+            optional_values.extend(value for value in (old.get('optional'),row.get('optional'))
+                                   if isinstance(value,bool))
+            old['optional_values']=sorted(set(optional_values))
+            if optional_values:
+                old['optional']=False not in optional_values
         if row.get('version_status')=='estimated':
             for k in ('version_status','selection_policy','version_evidence','resolution_queried_at','declared_version'):old[k]=row.get(k)
         old['version_observations']=old.get('version_observations',[])+row.get('version_observations',[])

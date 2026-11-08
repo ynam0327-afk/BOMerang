@@ -1,0 +1,1040 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.6",
+  "serialNumber": "urn:uuid:4fc2b209-523a-4b6b-96a8-66b58f9c7ce9",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-11-07T01:12:48Z",
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "BOMerang",
+          "version": "0.1.0"
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "name": "BOMerang SBOM",
+      "bom-ref": "urn:bomerang:project"
+    },
+    "properties": [
+      {
+        "name": "bomerang:source_file",
+        "value": "build.gradle"
+      },
+      {
+        "name": "bomerang:source_file",
+        "value": "kotlin\\build.gradle.kts"
+      },
+      {
+        "name": "bomerang:source_file",
+        "value": "pom.xml"
+      },
+      {
+        "name": "bomerang:source_file",
+        "value": "pyproject.toml"
+      },
+      {
+        "name": "bomerang:source_file",
+        "value": "requirements.txt"
+      }
+    ]
+  },
+  "components": [
+    {
+      "type": "library",
+      "name": "gradle-api",
+      "bom-ref": "pkg:maven/org.example/gradle-api@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/gradle-api@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "shared",
+      "bom-ref": "pkg:maven/org.example/shared@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/shared@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "shared-java",
+      "bom-ref": "pkg:maven/org.example/shared-java@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/shared-java@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\", \"test\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false, true]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "gradle-provided",
+      "bom-ref": "pkg:maven/org.example/gradle-provided@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/gradle-provided@1.0",
+      "scope": "optional",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "provided"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"provided\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "gradle-runtime",
+      "bom-ref": "pkg:maven/org.example/gradle-runtime@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/gradle-runtime@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "gradle-test-runtime",
+      "bom-ref": "pkg:maven/org.example/gradle-test-runtime@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/gradle-test-runtime@1.0",
+      "scope": "optional",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "test"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"test\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "shared",
+      "bom-ref": "pkg:maven/org.other/shared@1.0",
+      "version": "1.0",
+      "group": "org.other",
+      "purl": "pkg:maven/org.other/shared@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "gradle-kotlin",
+      "bom-ref": "pkg:maven/org.example/gradle-kotlin@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/gradle-kotlin@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "build.gradle.kts"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "optional-only",
+      "bom-ref": "pkg:maven/org.example/optional-only@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/optional-only@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "true"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[true]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "managed-lib",
+      "bom-ref": "pkg:maven/org.example/managed-lib@2.0",
+      "version": "2.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/managed-lib@2.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "2.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "compile"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"compile\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "test-java",
+      "bom-ref": "pkg:maven/org.example/test-java@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/test-java@1.0",
+      "scope": "optional",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "test"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"test\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "provided-java",
+      "bom-ref": "pkg:maven/org.example/provided-java@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/provided-java@1.0",
+      "scope": "optional",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "provided"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"provided\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "java-parent",
+      "bom-ref": "pkg:maven/org.example/java-parent@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/java-parent@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "java-child",
+      "bom-ref": "pkg:maven/org.example/java-child@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/java-child@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "2"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "java-leaf",
+      "bom-ref": "pkg:maven/org.example/java-leaf@1.0",
+      "version": "1.0",
+      "group": "org.example",
+      "purl": "pkg:maven/org.example/java-leaf@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "maven"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pom.xml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "3"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        },
+        {
+          "name": "bomerang:optional",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:optional_values",
+          "value": "[false]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "shared",
+      "bom-ref": "pkg:pypi/shared@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/shared@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        },
+        {
+          "name": "bomerang:scopes",
+          "value": "[\"runtime\"]"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "py-runtime",
+      "bom-ref": "pkg:pypi/py-runtime@1.5",
+      "version": "1.5",
+      "purl": "pkg:pypi/py-runtime@1.5",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "<2,>=1"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "py-active",
+      "bom-ref": "pkg:pypi/py-active@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/py-active@1.0",
+      "scope": "required",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "pyproject.toml"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        },
+        {
+          "name": "bomerang:scope",
+          "value": "runtime"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "included",
+      "bom-ref": "pkg:pypi/included@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/included@1.0",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "base.txt"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "py-parent",
+      "bom-ref": "pkg:pypi/py-parent@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/py-parent@1.0",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "requirements.txt"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "1"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "py-child",
+      "bom-ref": "pkg:pypi/py-child@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/py-child@1.0",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "requirements.txt"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "2"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        }
+      ]
+    },
+    {
+      "type": "library",
+      "name": "py-leaf",
+      "bom-ref": "pkg:pypi/py-leaf@1.0",
+      "version": "1.0",
+      "purl": "pkg:pypi/py-leaf@1.0",
+      "properties": [
+        {
+          "name": "bomerang:ecosystem",
+          "value": "pypi"
+        },
+        {
+          "name": "bomerang:declared_version",
+          "value": "==1.0"
+        },
+        {
+          "name": "bomerang:source_file",
+          "value": "requirements.txt"
+        },
+        {
+          "name": "bomerang:depth",
+          "value": "3"
+        },
+        {
+          "name": "bomerang:parse_status",
+          "value": "success"
+        },
+        {
+          "name": "bomerang:is_circular",
+          "value": "false"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:maven/org.example/gradle-api@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/shared@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/shared-java@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/gradle-provided@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/gradle-runtime@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/gradle-test-runtime@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.other/shared@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/gradle-kotlin@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/optional-only@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/managed-lib@2.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/test-java@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/provided-java@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:maven/org.example/java-parent@1.0",
+      "dependsOn": [
+        "pkg:maven/org.example/java-child@1.0"
+      ]
+    },
+    {
+      "ref": "pkg:maven/org.example/java-child@1.0",
+      "dependsOn": [
+        "pkg:maven/org.example/java-leaf@1.0"
+      ]
+    },
+    {
+      "ref": "pkg:maven/org.example/java-leaf@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/shared@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/py-runtime@1.5",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/py-active@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/included@1.0",
+      "dependsOn": []
+    },
+    {
+      "ref": "pkg:pypi/py-parent@1.0",
+      "dependsOn": [
+        "pkg:pypi/py-child@1.0"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/py-child@1.0",
+      "dependsOn": [
+        "pkg:pypi/py-leaf@1.0"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/py-leaf@1.0",
+      "dependsOn": []
+    }
+  ]
+}

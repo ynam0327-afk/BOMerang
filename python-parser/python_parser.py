@@ -1,9 +1,10 @@
 from packaging.version import Version
 from packaging.specifiers import SpecifierSet
+from packaging.utils import canonicalize_name
 from pathlib import Path
 import sys
 
-from toml_parser import parse_pyproject
+from toml_parser import parse_pyproject, parse_pyproject_document, make_declaration
 
 from dependency_node import DependencyNode
 from requirement_parser import parse_requirement
@@ -15,7 +16,7 @@ _UNSET = object()
     # 버전 인자 전달 X vs 버전 조회: None
 def make_purl(name: str, version: str | None = None) -> str:
     # PyPI package의 PURL을 생성
-    normalized_name = name.lower().replace("_", "-")
+    normalized_name = canonicalize_name(name)
     # PyPI 패키지에서는 처리할 기호 추가 예정
 
     if version:
@@ -28,6 +29,9 @@ class PythonParser:
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
         self._declared_exact_versions = {}
+        self.declarations = []
+        self.declaration_errors = []
+        self.declaration_packages = []
         # 확정 버전 저장 공간
 
     def _is_applicable(self, requirement) -> bool:
@@ -35,7 +39,10 @@ class PythonParser:
         if requirement.marker is None:
             return True
 
-        return requirement.marker.evaluate({"extra": ""})
+        try:
+            return requirement.marker.evaluate({"extra": ""})
+        except Exception:
+            return False  # Static extraction records the marker error.
     
     def supports(self, file_name: str) -> bool:
         return Path(file_name).name in {
@@ -64,7 +71,7 @@ class PythonParser:
                 version = self._get_resolved_version(requirement)
 
                 if version is not None:
-                    name = requirement.name.lower().replace("_", "-")
+                    name = canonicalize_name(requirement.name)
                     self._declared_exact_versions.setdefault(name, set()).add(version)
 
             return
@@ -91,11 +98,14 @@ class PythonParser:
                     version = self._get_resolved_version(value)
 
                     if version is not None:
-                        name = value.name.lower().replace("_", "-")
+                        name = canonicalize_name(value.name)
                         self._declared_exact_versions.setdefault(name, set()).add(version)
 
     def parse(self, file_path: str) -> list[DependencyNode]:
         self._declared_exact_versions = {}
+        self.declarations = []
+        self.declaration_errors = []
+        self.declaration_packages = []
 
         self._collect_declared_versions(
             Path(file_path).resolve(),
@@ -114,6 +124,7 @@ class PythonParser:
         )
 
         self._merge_unresolved_nodes(nodes)
+        self._finalize_declarations(nodes)
 
         return list(nodes.values())
 
@@ -131,6 +142,9 @@ class PythonParser:
         visited_files.add(file_path)
 
         if file_path.name == "pyproject.toml":
+            document = parse_pyproject_document(str(file_path))
+            self.declarations.extend(document["declarations"])
+            self.declaration_errors.extend(document["errors"])
             requirements = parse_pyproject(str(file_path))
 
             for requirement, scope in requirements:
@@ -149,11 +163,21 @@ class PythonParser:
             return
 
         with file_path.open("r", encoding="utf-8-sig") as file:
-            for line in file:
+            for line_number, line in enumerate(file, 1):
 
                 result = parse_requirement(line)
 
                 if result is None:
+                    raw = line.strip()
+                    if raw and not raw.startswith(("#", "-")):
+                        try:
+                            make_declaration(raw, None, file_path, f"line:{line_number}", kind="requirements")
+                        except Exception as exc:
+                            self.declaration_errors.append({
+                                "source_file": str(file_path), "source_locator": f"line:{line_number}",
+                                "raw_declaration": raw, "category": "invalid_requirement",
+                                "marker_status": "error" if ";" in raw else None,
+                                "message": str(exc)})
                     continue
 
                 result_type, value = result
@@ -174,7 +198,10 @@ class PythonParser:
 
                 # 패키지
                 elif result_type == "package":
-                    if not self._is_applicable(value):
+                    declaration = make_declaration(
+                        line.strip(), None, file_path, f"line:{line_number}", kind="requirements")
+                    self.declarations.append(declaration)
+                    if not declaration["active_in_graph"]:
                         continue
 
                     self._parse_package(
@@ -342,7 +369,7 @@ class PythonParser:
             if node.resolved_version is None:
                 continue
 
-            name = node.name.lower().replace("_", "-")
+            name = canonicalize_name(node.name)
             versioned_by_name.setdefault(name, {})[
                     node.resolved_version
             ] = purl
@@ -353,7 +380,7 @@ class PythonParser:
         for purl, node in nodes.items():
             if node.resolved_version is not None:
                 continue
-            name = node.name.lower().replace("_", "-")
+            name = canonicalize_name(node.name)
             candidates = versioned_by_name.get(name, {})
 
             if len(candidates) != 1:
@@ -399,6 +426,44 @@ class PythonParser:
                 target_node.is_circular or old_node.is_circular
             )
             del nodes[old_purl]
+
+
+    def _finalize_declarations(self, nodes):
+        """Link observed graph versions without resolving optional/static entries."""
+        from packaging.requirements import Requirement
+        from packaging.utils import canonicalize_name
+        packages = {}
+        for node in nodes.values():
+            node.declarations = []
+        for declaration in self.declarations:
+            req = Requirement(declaration["requirement"])
+            version = self._get_resolved_version(req)
+            candidates = [node for node in nodes.values()
+                          if canonicalize_name(node.name) == declaration["name"]
+                          and node.resolved_version is not None
+                          and (not req.specifier or req.specifier.contains(node.resolved_version))]
+            if version is None and declaration["active_in_graph"] and len(candidates) == 1:
+                version = candidates[0].resolved_version
+            declaration["resolved_version"] = version
+            declaration["version_status"] = (
+                "unresolved" if version is None else
+                "confirmed" if self._get_resolved_version(req) is not None else "estimated")
+            declaration["purl"] = make_purl(declaration["name"], version)
+            purl = declaration["purl"]
+            package = packages.setdefault(purl, {
+                "name": declaration["name"], "ecosystem": "pypi", "purl": purl,
+                "declared_version": declaration["declared_version"],
+                "resolved_version": version, "version_status": declaration["version_status"],
+                "depth": 1, "dependencies": [], "declarations": [], "source_files": [],
+                "scope": declaration["scope"], "parse_status": "success",
+                "usage_status": "declaration_inventory_not_installed_graph",
+            })
+            package["declarations"].append(declaration)
+            if declaration["source_file"] not in package["source_files"]:
+                package["source_files"].append(declaration["source_file"])
+            if purl in nodes:
+                nodes[purl].declarations.append(declaration)
+        self.declaration_packages = list(packages.values())
 
     def _get_declared_version(self, requirement):
 
@@ -459,7 +524,7 @@ class PythonParser:
         return str(max(candidates)) # 버전 범위 중 가장 최신 버전
 
     def _resolve_transitive_version(self, requirement):
-        name = requirement.name.lower().replace("_", "-")
+        name = canonicalize_name(requirement.name)
         pinned_versions = self._declared_exact_versions.get(name, set())
 
         # 직접 의존성의 정확한 버전이 없으면 기존 로직 사용

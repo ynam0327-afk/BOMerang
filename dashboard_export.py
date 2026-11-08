@@ -9,6 +9,9 @@ from pathlib import Path
 def export(document):
     if not isinstance(document, dict) or not isinstance(document.get('results'), list):
         raise ValueError('Expected normalized priority document with results array')
+    model = document.get('priority_model') or {}
+    if model and (model.get('cvss_weight') != 1.0 or model.get('depth_weight') != 0.0):
+        raise ValueError('Default dashboard requires CVSS 100%; preserve experiments separately')
     packages = []
     counts = Counter()
     for row in document['results']:
@@ -16,6 +19,13 @@ def export(document):
         findings = []
         for item in row['vulnerabilities']:
             priority = copy.deepcopy(item.get('project_priority', {}))
+            weights = priority.get('weights') or {}
+            if weights and (weights.get('cvss') != 1.0 or weights.get('depth') != 0.0):
+                raise ValueError('Dashboard finding requires CVSS 100% baseline weights')
+            selected = priority.get('selected_cvss') or {}
+            if priority.get('status') == 'scored' and selected.get('score') is not None:
+                if priority.get('priority_score') != round(selected['score'] * 10, 2):
+                    raise ValueError('Dashboard priority_score does not match CVSS 100% policy')
             match = item.get('local_version_validation', {}).get('status', 'unknown')
             finding = {
                 'id': item['canonical_id'],
@@ -27,6 +37,7 @@ def export(document):
                 'selected_cvss': priority.get('selected_cvss'),
                 'provisional': row.get('version_status', package.get('version_status')) == 'estimated',
                 'runtime_applicability': priority.get('runtime_applicability', 'not_evaluated'),
+                'application_status': (item.get('application_review') or {}).get('status', 'unreviewed'),
                 'priority_evidence': priority,
             }
             findings.append(finding)

@@ -8,7 +8,11 @@ import sys
 
 ROOT=Path(__file__).resolve().parent
 sys.path.insert(0,str(ROOT/'python-parser'))
-from python_security_adapter import parse_python_file,merge_packages
+# Import before callers can reorder sys.path toward the legacy parser copy.
+import python_parser as _python_parser
+if Path(_python_parser.__file__).resolve() != ROOT/'python-parser'/'python_parser.py':
+    raise ImportError('Root integrated_parser requires root python-parser; use a fresh process')
+from python_security_adapter import parse_python_file,merge_packages,merge_declarations
 
 
 def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=False,exclude_dirs=None)->dict:
@@ -16,17 +20,23 @@ def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=Fa
     if not project_dir.is_dir():raise ValueError(f'Not a directory: {project_dir}')
     excluded={'.git','target','.venv','venv','__pycache__','.pytest_cache','out',*(exclude_dirs or [])}
     rows=[];files=[];logs=[]
+    declarations=[];declaration_packages=[];declaration_errors=[]
     for path in sorted(project_dir.rglob('*')):
         if not path.is_file() or any(p in excluded for p in path.relative_to(project_dir).parts):continue
         source=str(path.relative_to(project_dir))
         if path.name in {'requirements.txt','pyproject.toml'}:
-            files.append(source);rows.extend(parse_python_file(path,pypi_client))
+            files.append(source)
+            metadata={}
+            rows.extend(parse_python_file(path,pypi_client,metadata=metadata))
+            declarations.extend(metadata['declarations'])
+            declaration_packages.extend(metadata['declaration_packages'])
+            declaration_errors.extend(metadata['declaration_errors'])
         elif path.name in {'pom.xml','build.gradle','build.gradle.kts'}:
             files.append(source)
             command=[os.getenv('BOMERANG_JAVA','java'),'-Dfile.encoding=UTF-8','-cp',str(java_classes),'com.bomerang.JsonDependencyExporter',str(path)]
             if resolve_maven and path.name=='pom.xml':command.append('--resolve-maven')
             completed=subprocess.run(command,capture_output=True,text=True,encoding='utf-8',errors='replace',check=True,timeout=300)
-            if resolve_maven and ('[X]' in completed.stderr or '[!] POM 다운로드 실패' in completed.stderr):
+            if resolve_maven and ('[X]' in completed.stderr or any(line.startswith('[!] POM ') for line in completed.stderr.splitlines())):
                 raise RuntimeError(f'Maven remote resolution incomplete for {path}:\n{completed.stderr}')
             if completed.stderr:logs.append({'source_file':source,'stderr':completed.stderr})
             items=json.loads(completed.stdout)
@@ -36,6 +46,9 @@ def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=Fa
                 rows.append(item)
     from packaging.markers import default_environment
     return {'files':files,'dependencies':merge_packages(rows),'parser_logs':logs,
+            'declarations':merge_declarations(declarations),
+            'declaration_packages':merge_packages(declaration_packages),
+            'declaration_errors':list({json.dumps(e,sort_keys=True):e for e in declaration_errors}.values()),
             'python_marker_environment':default_environment(),
             'analysis_notes':['Current-environment Python markers; not a whole-project version solver.',
                               'Java BOM/scope/exclusion behavior follows existing exporter.',

@@ -18,7 +18,7 @@ def evaluate_range(version,ecosystem,rg):
         if rg.get('type')!='ECOSYSTEM':raise ValueError('Unsupported range type: '+str(rg.get('type')))
         target=version_key(version,ecosystem);events=rg.get('events')
         if not isinstance(events,list) or not events:raise ValueError('Missing events')
-        limits=[];timeline=[];types=set();seen=set()
+        limits=[];timeline=[];types=set();seen={}
         for event in events:
             if not isinstance(event,dict) or len(event)!=1:raise ValueError('One event type required')
             kind,value=next(iter(event.items()));types.add(kind)
@@ -27,8 +27,12 @@ def evaluate_range(version,ecosystem,rg):
             if kind=='limit':
                 limits.append(None if '*' in value else version_key(value,ecosystem));continue
             key=(0,None) if kind=='introduced' and value=='0' else (1,version_key(value,ecosystem))
-            if key in seen:raise ValueError('Ambiguous equivalent event versions')
-            seen.add(key);timeline.append((key,kind,value))
+            same_version=seen.setdefault(key,set())
+            # introduced == last_affected is a valid inclusive single-version
+            # interval. Repeated kinds and introduced == fixed stay ambiguous.
+            if kind in same_version or (same_version and same_version|{kind}!={'introduced','last_affected'}):
+                raise ValueError('Ambiguous equivalent event versions')
+            same_version.add(kind);timeline.append((key,kind,value))
         if 'introduced' not in types:raise ValueError('Missing introduced event')
         if {'fixed','last_affected'}<=types:raise ValueError('fixed and last_affected cannot mix')
         if limits and not any(limit is None or target<limit for limit in limits):

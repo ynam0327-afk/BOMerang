@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "cases": [
+    {
+      "id": "flask-3.1.2-declarations",
+      "repository": "pallets/flask",
+      "github_url": "https://github.com/pallets/flask",
+      "release_reference": "3.1.2",
+      "commit_sha": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+      "dependency_files": [
+        "pyproject.toml"
+      ],
+      "ecosystem": "pypi",
+      "python_environment": {
+        "python_version_full": "3.14.3 (tags/v3.14.3:323c59a, Feb  3 2026, 16:04:56) [MSC v.1944 64 bit (AMD64)]",
+        "executable": "C:\\Python314\\python.exe",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "markers": {
+          "implementation_name": "cpython",
+          "implementation_version": "3.14.3",
+          "os_name": "nt",
+          "platform_machine": "AMD64",
+          "platform_release": "11",
+          "platform_system": "Windows",
+          "platform_version": "10.0.26300",
+          "python_full_version": "3.14.3",
+          "platform_python_implementation": "CPython",
+          "python_version": "3.14",
+          "sys_platform": "win32"
+        }
+      },
+      "gold_file": "gold/flask.json",
+      "vendored_source": "sources/flask",
+      "source_sha256": {
+        "pyproject.toml": "e14476b8d0cadf862b25eee62f63793db0cf941a96cb8b8a9eaee6ce2a70c4f6",
+        "LICENSE.txt": "489a8e1108509ed98a37bb983e11e0f7e1d31f0bd8f99a79c8448e7ff37d07ea"
+      },
+      "license": {
+        "spdx": "BSD-3-Clause",
+        "path": "LICENSE.txt",
+        "url": "https://raw.githubusercontent.com/pallets/flask/2c1b30d0503cfb064f1cb252e6614a06915a362a/LICENSE.txt"
+      },
+      "gold_construction": "Manual transcription of upstream declarations; packaging parses transcribed text, never BOMerang output. Independently checked against stdlib tomllib in tests.",
+      "scope": "All project.dependencies, project.optional-dependencies and PEP 735 dependency-groups in root pyproject.toml; excludes build-system and tool commands",
+      "acquisition": {
+        "retrieved_at": "2026-11-06T15:21:01.746834+00:00",
+        "urls": [
+          {
+            "url": "https://api.github.com/repos/pallets/flask/commits/3.1.2",
+            "purpose": "Resolve release reference to immutable full commit SHA"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/pallets/flask/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml",
+            "purpose": "Preserve original declarations"
+          },
+          {
+            "url": "https://raw.githubusercontent.com/pallets/flask/2c1b30d0503cfb064f1cb252e6614a06915a362a/LICENSE.txt",
+            "purpose": "Verify and preserve BSD-3-Clause license"
+          }
+        ],
+        "initial_browser_api_attempt": "web tool API URL inaccessible; direct urllib GitHub API succeeded",
+        "network_failures_possible": [
+          "HTTP 403/429 rate limit",
+          "timeout/DNS/TLS failure",
+          "removed reference or file"
+        ]
+      }
+    }
+  ]
+}

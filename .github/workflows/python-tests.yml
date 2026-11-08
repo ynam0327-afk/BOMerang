@@ -1,4 +1,4 @@
-﻿name: Python Parser CI
+name: BOMerang Offline Verification
 
 on:
   push:
@@ -11,43 +11,12 @@ permissions:
   contents: read
 
 jobs:
-  python-tests:
+  offline-verification:
     runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v7
-
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: '3.14'
-
-      - name: Install test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install pytest packaging requests httpx tomli
-
-      - name: Run Python parser tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}/python-parser
-        run: |
-          mkdir -p test-results
-          python -m pytest python-parser/test -q \
-            --junitxml=test-results/pytest.xml
-
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: python-test-results
-          path: test-results/
-          if-no-files-found: ignore
-
-  offline-integration-tests:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      PYTHONUTF8: '1'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -63,36 +32,18 @@ jobs:
           distribution: temurin
           java-version: '17'
 
-      - name: Install test dependencies
-        run: python -m pip install pytest packaging
+      - name: Install pinned verification dependencies
+        run: python -m pip install -r ci/requirements.txt
 
-      - name: Compile Java integration dependencies
-        run: |
-          # Compile from source; do not rely on committed class files.
-          mkdir -p target/classes
-          javac --release 17 -encoding UTF-8 -sourcepath src/main/java \
-            -d target/classes src/main/java/com/bomerang/JsonDependencyExporter.java
-          javac --release 17 -encoding UTF-8 \
-            -cp src/main/java/com/bomerang/lib/maven-artifact-3.9.9.jar \
-            -d src/main/java/com/bomerang/bridge \
-            src/main/java/com/bomerang/bridge/MavenComparisonServer.java
+      - name: Run 429 isolated regressions, Flask and offline CycloneDX checks
+        # Compiles Java 17 sources in a disposable copy, never checkout target/classes.
+        # Three fresh pytest processes prevent collisions among legacy module copies.
+        run: python -B ci/run_checks.py --output test-results/verification
 
-      - name: Run offline integration regressions
-        env:
-          PYTHONPATH: ${{ github.workspace }}/python-parser:${{ github.workspace }}/python-security-integration
-        run: |
-          mkdir -p test-results
-          # Explicit files avoid live checks and duplicate legacy test modules.
-          python -m pytest --import-mode=importlib -q \
-            test_integrated_parser.py \
-            test_cyclonedx_converter.py \
-            test_security_sbom_pipeline.py \
-            --junitxml=test-results/offline-integration.xml
-
-      - name: Upload integration test results
+      - name: Upload verification evidence
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: offline-integration-test-results
-          path: test-results/
-          if-no-files-found: ignore
+          name: bomerang-offline-verification
+          path: test-results/verification/
+          if-no-files-found: warn

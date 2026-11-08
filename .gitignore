@@ -9,3 +9,9 @@ venv/
 
 # Java build output
 target/
+# Local verification output and Gradle cache
+.gradle/
+test-results/
+test-reports/
+accuracy-tests/results/
+accuracy-tests/step3/

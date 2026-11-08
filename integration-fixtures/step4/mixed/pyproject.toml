@@ -1,0 +1,17 @@
+[project]
+name = "bomerang-mixed-fixture"
+version = "0.0.0"
+dependencies = [
+  "shared==1.0",
+  "py-runtime>=1,<2",
+  "py-active==1.0; python_version >= '3'",
+  "py-inactive==1.0; python_version < '2'",
+]
+
+[project.optional-dependencies]
+web = ["shared==1.0", "web-only[SOCKS]>=1"]
+docs = ["doc-only"]
+
+[dependency-groups]
+base = ["group-base"]
+dev = [{include-group = "base"}, "shared==1.0", "pytest>=8"]

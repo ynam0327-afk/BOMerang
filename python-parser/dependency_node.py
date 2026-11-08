@@ -50,3 +50,5 @@ class DependencyNode:
     # Circular dependency detection
     is_circular: bool = False
     # 파일 참조와 패키지 의존성의 각 순환은 별개의 사이클이라 분리 필요.
+    # Source declarations are additive; existing graph fields remain unchanged.
+    declarations: list[dict] = field(default_factory=list)

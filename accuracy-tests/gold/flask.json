@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "repository": "pallets/flask",
+  "commit_sha": "2c1b30d0503cfb064f1cb252e6614a06915a362a",
+  "scope": "All project.dependencies, project.optional-dependencies and PEP 735 dependency-groups in root pyproject.toml; excludes build-system and tool commands",
+  "construction": "Manual transcription of upstream declarations; packaging parses transcribed text, never BOMerang output. Independently checked against stdlib tomllib in tests.",
+  "dependencies": [
+    {
+      "name": "blinker",
+      "ecosystem": "pypi",
+      "declared_version": ">=1.9.0",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "blinker>=1.9.0",
+        "line": 24,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L24"
+      }
+    },
+    {
+      "name": "click",
+      "ecosystem": "pypi",
+      "declared_version": ">=8.1.3",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "click>=8.1.3",
+        "line": 25,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L25"
+      }
+    },
+    {
+      "name": "importlib-metadata",
+      "ecosystem": "pypi",
+      "declared_version": ">=3.6.0",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": "python_version < \"3.10\"",
+      "evidence": {
+        "raw": "importlib-metadata>=3.6.0; python_version < '3.10'",
+        "line": 26,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L26"
+      }
+    },
+    {
+      "name": "itsdangerous",
+      "ecosystem": "pypi",
+      "declared_version": ">=2.2.0",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "itsdangerous>=2.2.0",
+        "line": 27,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L27"
+      }
+    },
+    {
+      "name": "jinja2",
+      "ecosystem": "pypi",
+      "declared_version": ">=3.1.2",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "jinja2>=3.1.2",
+        "line": 28,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L28"
+      }
+    },
+    {
+      "name": "markupsafe",
+      "ecosystem": "pypi",
+      "declared_version": ">=2.1.1",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "markupsafe>=2.1.1",
+        "line": 29,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L29"
+      }
+    },
+    {
+      "name": "werkzeug",
+      "ecosystem": "pypi",
+      "declared_version": ">=3.1.0",
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "werkzeug>=3.1.0",
+        "line": 30,
+        "locator": "project.dependencies",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L30"
+      }
+    },
+    {
+      "name": "asgiref",
+      "ecosystem": "pypi",
+      "declared_version": ">=3.2",
+      "scope": "optional:async",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "asgiref>=3.2",
+        "line": 34,
+        "locator": "project.optional-dependencies.async",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L34"
+      }
+    },
+    {
+      "name": "python-dotenv",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "optional:dotenv",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "python-dotenv",
+        "line": 35,
+        "locator": "project.optional-dependencies.dotenv",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L35"
+      }
+    },
+    {
+      "name": "ruff",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "dev",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "ruff",
+        "line": 39,
+        "locator": "dependency-groups.dev",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L39"
+      }
+    },
+    {
+      "name": "tox",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "dev",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "tox",
+        "line": 40,
+        "locator": "dependency-groups.dev",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L40"
+      }
+    },
+    {
+      "name": "tox-uv",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "dev",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "tox-uv",
+        "line": 41,
+        "locator": "dependency-groups.dev",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L41"
+      }
+    },
+    {
+      "name": "pallets-sphinx-themes",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "docs",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pallets-sphinx-themes",
+        "line": 44,
+        "locator": "dependency-groups.docs",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L44"
+      }
+    },
+    {
+      "name": "sphinx",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "docs",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "sphinx",
+        "line": 45,
+        "locator": "dependency-groups.docs",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L45"
+      }
+    },
+    {
+      "name": "sphinx-tabs",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "docs",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "sphinx-tabs",
+        "line": 46,
+        "locator": "dependency-groups.docs",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L46"
+      }
+    },
+    {
+      "name": "sphinxcontrib-log-cabinet",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "docs",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "sphinxcontrib-log-cabinet",
+        "line": 47,
+        "locator": "dependency-groups.docs",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L47"
+      }
+    },
+    {
+      "name": "sphinx-autobuild",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "docs-auto",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "sphinx-autobuild",
+        "line": 50,
+        "locator": "dependency-groups.docs-auto",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L50"
+      }
+    },
+    {
+      "name": "gha-update",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "gha-update",
+      "source_file": "pyproject.toml",
+      "marker": "python_full_version >= \"3.12\"",
+      "evidence": {
+        "raw": "gha-update ; python_full_version >= '3.12'",
+        "line": 53,
+        "locator": "dependency-groups.gha-update",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L53"
+      }
+    },
+    {
+      "name": "pre-commit",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "pre-commit",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pre-commit",
+        "line": 55,
+        "locator": "dependency-groups.pre-commit",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L55"
+      }
+    },
+    {
+      "name": "pre-commit-uv",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "pre-commit",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pre-commit-uv",
+        "line": 57,
+        "locator": "dependency-groups.pre-commit",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L57"
+      }
+    },
+    {
+      "name": "asgiref",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "tests",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "asgiref",
+        "line": 60,
+        "locator": "dependency-groups.tests",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L60"
+      }
+    },
+    {
+      "name": "greenlet",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "tests",
+      "source_file": "pyproject.toml",
+      "marker": "python_version < \"3.11\"",
+      "evidence": {
+        "raw": "greenlet ; python_version < '3.11'",
+        "line": 61,
+        "locator": "dependency-groups.tests",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L61"
+      }
+    },
+    {
+      "name": "pytest",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "tests",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pytest",
+        "line": 62,
+        "locator": "dependency-groups.tests",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L62"
+      }
+    },
+    {
+      "name": "python-dotenv",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "tests",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "python-dotenv",
+        "line": 63,
+        "locator": "dependency-groups.tests",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L63"
+      }
+    },
+    {
+      "name": "asgiref",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "asgiref",
+        "line": 66,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L66"
+      }
+    },
+    {
+      "name": "cryptography",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "cryptography",
+        "line": 67,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L67"
+      }
+    },
+    {
+      "name": "mypy",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "mypy",
+        "line": 68,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L68"
+      }
+    },
+    {
+      "name": "pyright",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pyright",
+        "line": 69,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L69"
+      }
+    },
+    {
+      "name": "pytest",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "pytest",
+        "line": 70,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L70"
+      }
+    },
+    {
+      "name": "python-dotenv",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "python-dotenv",
+        "line": 71,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L71"
+      }
+    },
+    {
+      "name": "types-contextvars",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "types-contextvars",
+        "line": 72,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L72"
+      }
+    },
+    {
+      "name": "types-dataclasses",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "scope": "typing",
+      "source_file": "pyproject.toml",
+      "marker": null,
+      "evidence": {
+        "raw": "types-dataclasses",
+        "line": 73,
+        "locator": "dependency-groups.typing",
+        "url": "https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/pyproject.toml#L73"
+      }
+    }
+  ]
+}

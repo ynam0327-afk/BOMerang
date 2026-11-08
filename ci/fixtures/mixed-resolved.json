@@ -1,0 +1,2282 @@
+{
+  "files": [
+    "build.gradle",
+    "kotlin\\build.gradle.kts",
+    "pom.xml",
+    "pyproject.toml",
+    "requirements.txt"
+  ],
+  "dependencies": [
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "gradle-api",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/gradle-api@1.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "shared",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/shared@1.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle",
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": [],
+      "version_observations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "shared-java",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/shared-java@1.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile",
+        "test"
+      ],
+      "optional": false,
+      "optional_values": [
+        false,
+        true
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle",
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": [],
+      "version_observations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "gradle-provided",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/gradle-provided@1.0",
+      "depth": 1,
+      "scope": "provided",
+      "scopes": [
+        "provided"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "gradle-runtime",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/gradle-runtime@1.0",
+      "depth": 1,
+      "scope": "runtime",
+      "scopes": [
+        "runtime"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle",
+        "integration-fixtures/step4/mixed/kotlin/build.gradle.kts"
+      ],
+      "declarations": [],
+      "version_observations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "gradle-test-runtime",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.example/gradle-test-runtime@1.0",
+      "depth": 1,
+      "scope": "test",
+      "scopes": [
+        "test"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.other",
+      "name": "shared",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle"
+      },
+      "purl": "pkg:maven/org.other/shared@1.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/build.gradle"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "gradle-kotlin",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "build.gradle.kts"
+      },
+      "purl": "pkg:maven/org.example/gradle-kotlin@1.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "build.gradle.kts",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/kotlin/build.gradle.kts"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "optional-only",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/optional-only@1.0",
+      "depth": 1,
+      "scope": "runtime",
+      "scopes": [
+        "runtime"
+      ],
+      "optional": true,
+      "optional_values": [
+        true
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "managed-lib",
+      "declared_version": "2.0",
+      "declared_versions": [
+        "2.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "2.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/managed-lib@2.0",
+      "depth": 1,
+      "scope": "compile",
+      "scopes": [
+        "compile"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "test-java",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/test-java@1.0",
+      "depth": 1,
+      "scope": "test",
+      "scopes": [
+        "test"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "provided-java",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/provided-java@1.0",
+      "depth": 1,
+      "scope": "provided",
+      "scopes": [
+        "provided"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "java-parent",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/java-parent@1.0",
+      "depth": 1,
+      "scope": "runtime",
+      "scopes": [
+        "runtime"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [
+        "pkg:maven/org.example/java-child@1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "java-child",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/java-child@1.0",
+      "depth": 2,
+      "scope": "runtime",
+      "scopes": [
+        "runtime"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [
+        "pkg:maven/org.example/java-leaf@1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "ecosystem": "maven",
+      "group": "org.example",
+      "name": "java-leaf",
+      "declared_version": "1.0",
+      "declared_versions": [
+        "1.0"
+      ],
+      "graph_resolution_status": "attempted_check_resolver_log",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "resolution_error": null,
+      "selection_policy": null,
+      "resolution_queried_at": null,
+      "version_evidence": {
+        "kind": "declared_exact_after_pom_management",
+        "source_file": "pom.xml"
+      },
+      "purl": "pkg:maven/org.example/java-leaf@1.0",
+      "depth": 3,
+      "scope": "runtime",
+      "scopes": [
+        "runtime"
+      ],
+      "optional": false,
+      "optional_values": [
+        false
+      ],
+      "source_file": "pom.xml",
+      "dependencies": [],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pom.xml"
+      ],
+      "declarations": []
+    },
+    {
+      "name": "shared",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/shared@1.0",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [
+        {
+          "declaration_id": "4571aa84ace4269bbbc68274e2c9332a91d319492dca2929b57e3ce75ae849ad",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[0]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "b36166522a0d55fce60cf4d9ff6f9b63f16d43626a768802c4788dfe6ddce9ac",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "optional:web",
+          "dependency_group": "web",
+          "optional": true,
+          "declaration_kind": "optional",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.optional-dependencies.web[0]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "95fbd33cc5e1895df963b7ff492c28b04dc324d3439bdac7e5830501f8c3c68a",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "dev",
+          "dependency_group": "dev",
+          "optional": false,
+          "declaration_kind": "dependency_group",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "dependency-groups.dev[1]",
+          "origin_group": "dev",
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "d09db6fba57aa45565c80449d3cb47cc2cd6300f5585f78b40f89b76c0621578",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+          "source_locator": "line:1",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        }
+      ],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/pyproject.toml"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "shared",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/pyproject.toml"
+          },
+          "resolution_queried_at": null
+        },
+        {
+          "name": "shared",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml",
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null,
+      "scopes": [
+        "runtime"
+      ]
+    },
+    {
+      "name": "py-runtime",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "<2,>=1",
+      "resolved_version": "1.5",
+      "purl": "pkg:pypi/py-runtime@1.5",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [
+        {
+          "declaration_id": "6ca78542f6428d275ea3f03b592d5c5e28d3bb38cb9ac442e332041b23ec8ffa",
+          "raw_declaration": "py-runtime>=1,<2",
+          "requirement": "py-runtime<2,>=1",
+          "name": "py-runtime",
+          "original_name": "py-runtime",
+          "ecosystem": "pypi",
+          "declared_version": "<2,>=1",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[1]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.5",
+          "version_status": "estimated",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-runtime@1.5"
+        }
+      ],
+      "version_status": "estimated",
+      "selection_policy": "latest_in_range",
+      "version_evidence": {
+        "kind": "registry_latest_in_range",
+        "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+        "url": "test://fixture/py-runtime/json",
+        "queried_at": "2026-11-07T01:12:48.633660+00:00",
+        "candidate_list_sha256": "6db3379e23500e476e4383fe4bc1892277aafb8d025dcaed1c4de153231bf8d8"
+      },
+      "resolution_queried_at": "2026-11-07T01:12:48.633660+00:00",
+      "version_observations": [
+        {
+          "name": "py-runtime",
+          "declared_version": "<2,>=1",
+          "resolved_version": "1.5",
+          "version_status": "estimated",
+          "selection_policy": "latest_in_range",
+          "version_evidence": {
+            "kind": "registry_latest_in_range",
+            "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+            "url": "test://fixture/py-runtime/json",
+            "queried_at": "2026-11-07T01:12:48.633660+00:00",
+            "candidate_list_sha256": "6db3379e23500e476e4383fe4bc1892277aafb8d025dcaed1c4de153231bf8d8"
+          },
+          "resolution_queried_at": "2026-11-07T01:12:48.633660+00:00"
+        }
+      ],
+      "declared_versions": [
+        "<2,>=1"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "py-active",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/py-active@1.0",
+      "dependencies": [],
+      "depth": 1,
+      "scope": "runtime",
+      "source_file": "pyproject.toml",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [
+        {
+          "declaration_id": "03a9efdf93ec2304b83fb590e9c9711e15bf72ce74509c05405263cf9f789019",
+          "raw_declaration": "py-active==1.0; python_version >= '3'",
+          "requirement": "py-active==1.0; python_version >= \"3\"",
+          "name": "py-active",
+          "original_name": "py-active",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[2]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": "python_version >= \"3\"",
+          "marker_raw": "python_version >= '3'",
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-active@1.0"
+        }
+      ],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/pyproject.toml"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "py-active",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/pyproject.toml"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "included",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/included@1.0",
+      "dependencies": [],
+      "depth": 1,
+      "scope": null,
+      "source_file": "base.txt",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [
+        {
+          "declaration_id": "73a3ae70581448b4f550cf2b0e5bf92ca1051ff23a7fb4eee8a782cb11ce4ce2",
+          "raw_declaration": "included==1.0",
+          "requirement": "included==1.0",
+          "name": "included",
+          "original_name": "included",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/base.txt",
+          "source_locator": "line:1",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/included@1.0"
+        }
+      ],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "included",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "py-parent",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/py-parent@1.0",
+      "dependencies": [
+        "pkg:pypi/py-child@1.0"
+      ],
+      "depth": 1,
+      "scope": null,
+      "source_file": "requirements.txt",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [
+        {
+          "declaration_id": "adb52d2db06d524884dc1a366fd5c16e5785cde2520338e7ad7d8cca4d53e083",
+          "raw_declaration": "py-parent==1.0",
+          "requirement": "py-parent==1.0",
+          "name": "py-parent",
+          "original_name": "py-parent",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+          "source_locator": "line:3",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-parent@1.0"
+        }
+      ],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "py-parent",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "py-child",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/py-child@1.0",
+      "dependencies": [
+        "pkg:pypi/py-leaf@1.0"
+      ],
+      "depth": 2,
+      "scope": null,
+      "source_file": "requirements.txt",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "py-child",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    },
+    {
+      "name": "py-leaf",
+      "ecosystem": "pypi",
+      "group": null,
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "purl": "pkg:pypi/py-leaf@1.0",
+      "dependencies": [],
+      "depth": 3,
+      "scope": null,
+      "source_file": "requirements.txt",
+      "parse_status": "success",
+      "error_message": null,
+      "is_circular": false,
+      "declarations": [],
+      "version_status": "confirmed",
+      "selection_policy": null,
+      "version_evidence": {
+        "kind": "declared_exact",
+        "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+      },
+      "resolution_queried_at": null,
+      "version_observations": [
+        {
+          "name": "py-leaf",
+          "declared_version": "==1.0",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "selection_policy": null,
+          "version_evidence": {
+            "kind": "declared_exact",
+            "source_file": "integration-fixtures/step4/mixed/requirements.txt"
+          },
+          "resolution_queried_at": null
+        }
+      ],
+      "declared_versions": [
+        "==1.0"
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "graph_resolution_status": "parser_result_not_independent_environment_validation",
+      "resolution_error": null,
+      "parser_error": null
+    }
+  ],
+  "parser_logs": [
+    {
+      "source_file": "pom.xml",
+      "stderr": "[-] ���� ������ POM ��û: http://127.0.0.1:49747/org/example/managed-lib/2.0/managed-lib-2.0.pom\n[-] ���� ������ POM ��û: http://127.0.0.1:49747/org/example/java-parent/1.0/java-parent-1.0.pom\n[-] ���� ������ POM ��û: http://127.0.0.1:49747/org/example/java-child/1.0/java-child-1.0.pom\n[-] ���� ������ POM ��û: http://127.0.0.1:49747/org/example/java-leaf/1.0/java-leaf-1.0.pom\n[-] ���� ������ POM ��û: http://127.0.0.1:49747/org/example/shared/1.0/shared-1.0.pom\n"
+    }
+  ],
+  "declarations": [
+    {
+      "declaration_id": "4571aa84ace4269bbbc68274e2c9332a91d319492dca2929b57e3ce75ae849ad",
+      "raw_declaration": "shared==1.0",
+      "requirement": "shared==1.0",
+      "name": "shared",
+      "original_name": "shared",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": "runtime",
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "runtime",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.dependencies[0]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/shared@1.0"
+    },
+    {
+      "declaration_id": "6ca78542f6428d275ea3f03b592d5c5e28d3bb38cb9ac442e332041b23ec8ffa",
+      "raw_declaration": "py-runtime>=1,<2",
+      "requirement": "py-runtime<2,>=1",
+      "name": "py-runtime",
+      "original_name": "py-runtime",
+      "ecosystem": "pypi",
+      "declared_version": "<2,>=1",
+      "extras": [],
+      "scope": "runtime",
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "runtime",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.dependencies[1]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.5",
+      "version_status": "estimated",
+      "parse_status": "success",
+      "purl": "pkg:pypi/py-runtime@1.5"
+    },
+    {
+      "declaration_id": "03a9efdf93ec2304b83fb590e9c9711e15bf72ce74509c05405263cf9f789019",
+      "raw_declaration": "py-active==1.0; python_version >= '3'",
+      "requirement": "py-active==1.0; python_version >= \"3\"",
+      "name": "py-active",
+      "original_name": "py-active",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": "runtime",
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "runtime",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.dependencies[2]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": "python_version >= \"3\"",
+      "marker_raw": "python_version >= '3'",
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/py-active@1.0"
+    },
+    {
+      "declaration_id": "105d2a59557bffff28c874018468e8b1fbcf7519ca20b414b920a6516081b893",
+      "raw_declaration": "py-inactive==1.0; python_version < '2'",
+      "requirement": "py-inactive==1.0; python_version < \"2\"",
+      "name": "py-inactive",
+      "original_name": "py-inactive",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": "runtime",
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "runtime",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.dependencies[3]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": "python_version < \"2\"",
+      "marker_raw": "python_version < '2'",
+      "marker_active": false,
+      "marker_status": "inactive",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/py-inactive@1.0"
+    },
+    {
+      "declaration_id": "b36166522a0d55fce60cf4d9ff6f9b63f16d43626a768802c4788dfe6ddce9ac",
+      "raw_declaration": "shared==1.0",
+      "requirement": "shared==1.0",
+      "name": "shared",
+      "original_name": "shared",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": "optional:web",
+      "dependency_group": "web",
+      "optional": true,
+      "declaration_kind": "optional",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.optional-dependencies.web[0]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/shared@1.0"
+    },
+    {
+      "declaration_id": "edb4ba6407a836dfa253d91bda2728af6bc789057722528a4bef47097532b3a8",
+      "raw_declaration": "web-only[SOCKS]>=1",
+      "requirement": "web-only[SOCKS]>=1",
+      "name": "web-only",
+      "original_name": "web-only",
+      "ecosystem": "pypi",
+      "declared_version": ">=1",
+      "extras": [
+        "socks"
+      ],
+      "scope": "optional:web",
+      "dependency_group": "web",
+      "optional": true,
+      "declaration_kind": "optional",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.optional-dependencies.web[1]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/web-only"
+    },
+    {
+      "declaration_id": "ed4935f604c007e367c8ab516e8555e03a84f8b4ba9bd3a4bf6652eb782b13a5",
+      "raw_declaration": "doc-only",
+      "requirement": "doc-only",
+      "name": "doc-only",
+      "original_name": "doc-only",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "extras": [],
+      "scope": "optional:docs",
+      "dependency_group": "docs",
+      "optional": true,
+      "declaration_kind": "optional",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "project.optional-dependencies.docs[0]",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/doc-only"
+    },
+    {
+      "declaration_id": "4580ab95e9e6980e72dc39f5d53cc0bc4958d4ee9a04ddd394f94dfdcc5d6630",
+      "raw_declaration": "group-base",
+      "requirement": "group-base",
+      "name": "group-base",
+      "original_name": "group-base",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "extras": [],
+      "scope": "base",
+      "dependency_group": "base",
+      "optional": false,
+      "declaration_kind": "dependency_group",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "dependency-groups.base[0]",
+      "origin_group": "base",
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/group-base"
+    },
+    {
+      "declaration_id": "7971da5182468427e1369554a3c3313549e3922cc518ddd4035708992b635755",
+      "raw_declaration": "group-base",
+      "requirement": "group-base",
+      "name": "group-base",
+      "original_name": "group-base",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "extras": [],
+      "scope": "dev",
+      "dependency_group": "dev",
+      "optional": false,
+      "declaration_kind": "dependency_group",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "dependency-groups.base[0]",
+      "origin_group": "base",
+      "include_path": [
+        "dependency-groups.dev[0]"
+      ],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/group-base"
+    },
+    {
+      "declaration_id": "95fbd33cc5e1895df963b7ff492c28b04dc324d3439bdac7e5830501f8c3c68a",
+      "raw_declaration": "shared==1.0",
+      "requirement": "shared==1.0",
+      "name": "shared",
+      "original_name": "shared",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": "dev",
+      "dependency_group": "dev",
+      "optional": false,
+      "declaration_kind": "dependency_group",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "dependency-groups.dev[1]",
+      "origin_group": "dev",
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/shared@1.0"
+    },
+    {
+      "declaration_id": "5587da01dcff50e7489d779750c4918bf706e0165c4db11273ff4f188094fb23",
+      "raw_declaration": "pytest>=8",
+      "requirement": "pytest>=8",
+      "name": "pytest",
+      "original_name": "pytest",
+      "ecosystem": "pypi",
+      "declared_version": ">=8",
+      "extras": [],
+      "scope": "dev",
+      "dependency_group": "dev",
+      "optional": false,
+      "declaration_kind": "dependency_group",
+      "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+      "source_locator": "dependency-groups.dev[2]",
+      "origin_group": "dev",
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": false,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/pytest"
+    },
+    {
+      "declaration_id": "d09db6fba57aa45565c80449d3cb47cc2cd6300f5585f78b40f89b76c0621578",
+      "raw_declaration": "shared==1.0",
+      "requirement": "shared==1.0",
+      "name": "shared",
+      "original_name": "shared",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": null,
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "requirements",
+      "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+      "source_locator": "line:1",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/shared@1.0"
+    },
+    {
+      "declaration_id": "73a3ae70581448b4f550cf2b0e5bf92ca1051ff23a7fb4eee8a782cb11ce4ce2",
+      "raw_declaration": "included==1.0",
+      "requirement": "included==1.0",
+      "name": "included",
+      "original_name": "included",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": null,
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "requirements",
+      "source_file": "integration-fixtures/step4/mixed/base.txt",
+      "source_locator": "line:1",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/included@1.0"
+    },
+    {
+      "declaration_id": "adb52d2db06d524884dc1a366fd5c16e5785cde2520338e7ad7d8cca4d53e083",
+      "raw_declaration": "py-parent==1.0",
+      "requirement": "py-parent==1.0",
+      "name": "py-parent",
+      "original_name": "py-parent",
+      "ecosystem": "pypi",
+      "declared_version": "==1.0",
+      "extras": [],
+      "scope": null,
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "requirements",
+      "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+      "source_locator": "line:3",
+      "origin_group": null,
+      "include_path": [],
+      "marker": null,
+      "marker_raw": null,
+      "marker_active": true,
+      "marker_status": "active",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": true,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "parse_status": "success",
+      "purl": "pkg:pypi/py-parent@1.0"
+    },
+    {
+      "declaration_id": "327dba76035f5c19bee5c359c90bbaa2da74ea4850288ab7c3b3215457114073",
+      "raw_declaration": "legacy; python_version < \"2\"",
+      "requirement": "legacy; python_version < \"2\"",
+      "name": "legacy",
+      "original_name": "legacy",
+      "ecosystem": "pypi",
+      "declared_version": null,
+      "extras": [],
+      "scope": null,
+      "dependency_group": null,
+      "optional": false,
+      "declaration_kind": "requirements",
+      "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+      "source_locator": "line:4",
+      "origin_group": null,
+      "include_path": [],
+      "marker": "python_version < \"2\"",
+      "marker_raw": "python_version < \"2\"",
+      "marker_active": false,
+      "marker_status": "inactive",
+      "marker_error": null,
+      "graph_enabled": true,
+      "active_in_graph": false,
+      "usage_status": "declared_not_installation_verified",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "parse_status": "success",
+      "purl": "pkg:pypi/legacy"
+    }
+  ],
+  "declaration_packages": [
+    {
+      "name": "shared",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/shared@1.0",
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "4571aa84ace4269bbbc68274e2c9332a91d319492dca2929b57e3ce75ae849ad",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[0]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "b36166522a0d55fce60cf4d9ff6f9b63f16d43626a768802c4788dfe6ddce9ac",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "optional:web",
+          "dependency_group": "web",
+          "optional": true,
+          "declaration_kind": "optional",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.optional-dependencies.web[0]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "95fbd33cc5e1895df963b7ff492c28b04dc324d3439bdac7e5830501f8c3c68a",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "dev",
+          "dependency_group": "dev",
+          "optional": false,
+          "declaration_kind": "dependency_group",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "dependency-groups.dev[1]",
+          "origin_group": "dev",
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        },
+        {
+          "declaration_id": "d09db6fba57aa45565c80449d3cb47cc2cd6300f5585f78b40f89b76c0621578",
+          "raw_declaration": "shared==1.0",
+          "requirement": "shared==1.0",
+          "name": "shared",
+          "original_name": "shared",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+          "source_locator": "line:1",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/shared@1.0"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml",
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "scope": "runtime",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph",
+      "scopes": [
+        "runtime"
+      ],
+      "version_observations": []
+    },
+    {
+      "name": "py-runtime",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/py-runtime@1.5",
+      "declared_version": "<2,>=1",
+      "resolved_version": "1.5",
+      "version_status": "estimated",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "6ca78542f6428d275ea3f03b592d5c5e28d3bb38cb9ac442e332041b23ec8ffa",
+          "raw_declaration": "py-runtime>=1,<2",
+          "requirement": "py-runtime<2,>=1",
+          "name": "py-runtime",
+          "original_name": "py-runtime",
+          "ecosystem": "pypi",
+          "declared_version": "<2,>=1",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[1]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.5",
+          "version_status": "estimated",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-runtime@1.5"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "runtime",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "py-active",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/py-active@1.0",
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "03a9efdf93ec2304b83fb590e9c9711e15bf72ce74509c05405263cf9f789019",
+          "raw_declaration": "py-active==1.0; python_version >= '3'",
+          "requirement": "py-active==1.0; python_version >= \"3\"",
+          "name": "py-active",
+          "original_name": "py-active",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[2]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": "python_version >= \"3\"",
+          "marker_raw": "python_version >= '3'",
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-active@1.0"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "runtime",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "py-inactive",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/py-inactive@1.0",
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "105d2a59557bffff28c874018468e8b1fbcf7519ca20b414b920a6516081b893",
+          "raw_declaration": "py-inactive==1.0; python_version < '2'",
+          "requirement": "py-inactive==1.0; python_version < \"2\"",
+          "name": "py-inactive",
+          "original_name": "py-inactive",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": "runtime",
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "runtime",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.dependencies[3]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": "python_version < \"2\"",
+          "marker_raw": "python_version < '2'",
+          "marker_active": false,
+          "marker_status": "inactive",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-inactive@1.0"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "runtime",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "web-only",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/web-only",
+      "declared_version": ">=1",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "edb4ba6407a836dfa253d91bda2728af6bc789057722528a4bef47097532b3a8",
+          "raw_declaration": "web-only[SOCKS]>=1",
+          "requirement": "web-only[SOCKS]>=1",
+          "name": "web-only",
+          "original_name": "web-only",
+          "ecosystem": "pypi",
+          "declared_version": ">=1",
+          "extras": [
+            "socks"
+          ],
+          "scope": "optional:web",
+          "dependency_group": "web",
+          "optional": true,
+          "declaration_kind": "optional",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.optional-dependencies.web[1]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/web-only"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "optional:web",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "doc-only",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/doc-only",
+      "declared_version": null,
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "ed4935f604c007e367c8ab516e8555e03a84f8b4ba9bd3a4bf6652eb782b13a5",
+          "raw_declaration": "doc-only",
+          "requirement": "doc-only",
+          "name": "doc-only",
+          "original_name": "doc-only",
+          "ecosystem": "pypi",
+          "declared_version": null,
+          "extras": [],
+          "scope": "optional:docs",
+          "dependency_group": "docs",
+          "optional": true,
+          "declaration_kind": "optional",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "project.optional-dependencies.docs[0]",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/doc-only"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "optional:docs",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "group-base",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/group-base",
+      "declared_version": null,
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "4580ab95e9e6980e72dc39f5d53cc0bc4958d4ee9a04ddd394f94dfdcc5d6630",
+          "raw_declaration": "group-base",
+          "requirement": "group-base",
+          "name": "group-base",
+          "original_name": "group-base",
+          "ecosystem": "pypi",
+          "declared_version": null,
+          "extras": [],
+          "scope": "base",
+          "dependency_group": "base",
+          "optional": false,
+          "declaration_kind": "dependency_group",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "dependency-groups.base[0]",
+          "origin_group": "base",
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/group-base"
+        },
+        {
+          "declaration_id": "7971da5182468427e1369554a3c3313549e3922cc518ddd4035708992b635755",
+          "raw_declaration": "group-base",
+          "requirement": "group-base",
+          "name": "group-base",
+          "original_name": "group-base",
+          "ecosystem": "pypi",
+          "declared_version": null,
+          "extras": [],
+          "scope": "dev",
+          "dependency_group": "dev",
+          "optional": false,
+          "declaration_kind": "dependency_group",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "dependency-groups.base[0]",
+          "origin_group": "base",
+          "include_path": [
+            "dependency-groups.dev[0]"
+          ],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/group-base"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "base",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "pytest",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/pytest",
+      "declared_version": ">=8",
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "5587da01dcff50e7489d779750c4918bf706e0165c4db11273ff4f188094fb23",
+          "raw_declaration": "pytest>=8",
+          "requirement": "pytest>=8",
+          "name": "pytest",
+          "original_name": "pytest",
+          "ecosystem": "pypi",
+          "declared_version": ">=8",
+          "extras": [],
+          "scope": "dev",
+          "dependency_group": "dev",
+          "optional": false,
+          "declaration_kind": "dependency_group",
+          "source_file": "integration-fixtures/step4/mixed/pyproject.toml",
+          "source_locator": "dependency-groups.dev[2]",
+          "origin_group": "dev",
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": false,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/pytest"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/pyproject.toml"
+      ],
+      "scope": "dev",
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "included",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/included@1.0",
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "73a3ae70581448b4f550cf2b0e5bf92ca1051ff23a7fb4eee8a782cb11ce4ce2",
+          "raw_declaration": "included==1.0",
+          "requirement": "included==1.0",
+          "name": "included",
+          "original_name": "included",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/base.txt",
+          "source_locator": "line:1",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/included@1.0"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/base.txt"
+      ],
+      "scope": null,
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "py-parent",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/py-parent@1.0",
+      "declared_version": "==1.0",
+      "resolved_version": "1.0",
+      "version_status": "confirmed",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "adb52d2db06d524884dc1a366fd5c16e5785cde2520338e7ad7d8cca4d53e083",
+          "raw_declaration": "py-parent==1.0",
+          "requirement": "py-parent==1.0",
+          "name": "py-parent",
+          "original_name": "py-parent",
+          "ecosystem": "pypi",
+          "declared_version": "==1.0",
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+          "source_locator": "line:3",
+          "origin_group": null,
+          "include_path": [],
+          "marker": null,
+          "marker_raw": null,
+          "marker_active": true,
+          "marker_status": "active",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": true,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": "1.0",
+          "version_status": "confirmed",
+          "parse_status": "success",
+          "purl": "pkg:pypi/py-parent@1.0"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "scope": null,
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    },
+    {
+      "name": "legacy",
+      "ecosystem": "pypi",
+      "purl": "pkg:pypi/legacy",
+      "declared_version": null,
+      "resolved_version": null,
+      "version_status": "unresolved",
+      "depth": 1,
+      "dependencies": [],
+      "declarations": [
+        {
+          "declaration_id": "327dba76035f5c19bee5c359c90bbaa2da74ea4850288ab7c3b3215457114073",
+          "raw_declaration": "legacy; python_version < \"2\"",
+          "requirement": "legacy; python_version < \"2\"",
+          "name": "legacy",
+          "original_name": "legacy",
+          "ecosystem": "pypi",
+          "declared_version": null,
+          "extras": [],
+          "scope": null,
+          "dependency_group": null,
+          "optional": false,
+          "declaration_kind": "requirements",
+          "source_file": "integration-fixtures/step4/mixed/requirements.txt",
+          "source_locator": "line:4",
+          "origin_group": null,
+          "include_path": [],
+          "marker": "python_version < \"2\"",
+          "marker_raw": "python_version < \"2\"",
+          "marker_active": false,
+          "marker_status": "inactive",
+          "marker_error": null,
+          "graph_enabled": true,
+          "active_in_graph": false,
+          "usage_status": "declared_not_installation_verified",
+          "resolved_version": null,
+          "version_status": "unresolved",
+          "parse_status": "success",
+          "purl": "pkg:pypi/legacy"
+        }
+      ],
+      "source_files": [
+        "integration-fixtures/step4/mixed/requirements.txt"
+      ],
+      "scope": null,
+      "parse_status": "success",
+      "usage_status": "declaration_inventory_not_installed_graph"
+    }
+  ],
+  "declaration_errors": [],
+  "python_marker_environment": {
+    "implementation_name": "cpython",
+    "implementation_version": "3.14.3",
+    "os_name": "nt",
+    "platform_machine": "AMD64",
+    "platform_release": "11",
+    "platform_system": "Windows",
+    "platform_version": "10.0.26300",
+    "python_full_version": "3.14.3",
+    "platform_python_implementation": "CPython",
+    "python_version": "3.14",
+    "sys_platform": "win32"
+  },
+  "analysis_notes": [
+    "Current-environment Python markers; not a whole-project version solver.",
+    "Java BOM/scope/exclusion behavior follows existing exporter.",
+    "Root constraints and Python extras merging retain original parser limitations."
+  ],
+  "publication_note": "Path-normalized test fixture copy. Original results preserved locally. Package/version/declaration/matching data unchanged."
+}

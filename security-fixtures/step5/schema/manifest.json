@@ -1,0 +1,36 @@
+{
+  "purpose": "Official CycloneDX 1.6 schemas only; no OSV/NVD requests",
+  "retrieved_at": "2026-11-07T01:34:25.063200+00:00",
+  "schemas": [
+    {
+      "url": "https://cyclonedx.org/schema/bom-1.6.schema.json",
+      "resolved_url": "https://cyclonedx.org/schema/bom-1.6.schema.json",
+      "file": "bom-1.6.schema.json",
+      "sha256": "1ebcb88a2c845ecb6ff7bee7aeabdff9422cb0347f3d6875b241bd444b7e098f",
+      "schema_id": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+      "draft": "http://json-schema.org/draft-07/schema#"
+    },
+    {
+      "url": "https://cyclonedx.org/schema/spdx.schema.json",
+      "resolved_url": "https://cyclonedx.org/schema/spdx.schema.json",
+      "file": "spdx.schema.json",
+      "sha256": "33863a360fc4d348e183d89c1ca7aa0877f481e7eb55be2d4102a30386188a10",
+      "schema_id": "http://cyclonedx.org/schema/spdx.schema.json",
+      "draft": "http://json-schema.org/draft-07/schema#"
+    },
+    {
+      "url": "https://cyclonedx.org/schema/jsf-0.82.schema.json",
+      "resolved_url": "https://cyclonedx.org/schema/jsf-0.82.schema.json",
+      "file": "jsf-0.82.schema.json",
+      "sha256": "2faf5eb3651f2ae5f46091a131770d8d847bbd121139d19c85fc7051bfa58c46",
+      "schema_id": "http://cyclonedx.org/schema/jsf-0.82.schema.json",
+      "draft": "http://json-schema.org/draft-07/schema#"
+    }
+  ],
+  "validator": {
+    "jsonschema": "4.26.0",
+    "referencing": "0.37.0",
+    "class": "Draft7Validator",
+    "format_checker": true
+  }
+}

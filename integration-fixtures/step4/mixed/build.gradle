@@ -1,0 +1,9 @@
+dependencies {
+    api 'org.example:gradle-api:1.0'
+    implementation 'org.example:shared:1.0'
+    testImplementation 'org.example:shared-java:1.0'
+    compileOnly 'org.example:gradle-provided:1.0'
+    runtimeOnly 'org.example:gradle-runtime:1.0'
+    testRuntimeOnly 'org.example:gradle-test-runtime:1.0'
+    implementation 'org.other:shared:1.0'
+}

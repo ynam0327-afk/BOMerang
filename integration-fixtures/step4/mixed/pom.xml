@@ -1,0 +1,18 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.fixture</groupId><artifactId>mixed</artifactId><version>1.0</version>
+  <properties><managed.version>2.0</managed.version></properties>
+  <dependencyManagement><dependencies>
+    <dependency><groupId>org.example</groupId><artifactId>managed-lib</artifactId><version>${managed.version}</version></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>managed-only</artifactId><version>99</version></dependency>
+  </dependencies></dependencyManagement>
+  <dependencies>
+    <dependency><groupId>org.example</groupId><artifactId>shared-java</artifactId><version>1.0</version><optional>true</optional></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>optional-only</artifactId><version>1.0</version><scope>runtime</scope><optional>true</optional></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>managed-lib</artifactId></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>test-java</artifactId><version>1.0</version><scope>test</scope></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>provided-java</artifactId><version>1.0</version><scope>provided</scope></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>java-parent</artifactId><version>1.0</version><scope>runtime</scope></dependency>
+    <dependency><groupId>org.example</groupId><artifactId>shared</artifactId><version>1.0</version></dependency>
+  </dependencies>
+</project>

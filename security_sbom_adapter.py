@@ -46,6 +46,10 @@ def to_cyclonedx_risk(priority):
             if priority_pending:
                 review_reasons.append(pending_reason or "priority_assessment_pending")
 
+            application_status = (vuln.get("application_review") or {}).get("status", "unreviewed")
+            if application_status == "unreviewed":
+                review_reasons.append("exploit_conditions_not_verified")
+
             findings.append({
                 "vulnerability_id": vuln_id,
                 "aliases": vuln.get("all_ids") or [],
@@ -53,6 +57,15 @@ def to_cyclonedx_risk(priority):
                 "cvss_version": cvss.get("version"),
                 "cvss_vector": cvss.get("vector"),
                 "priority_score": risk.get("priority_score"),
+                "priority_status": risk.get("status"),
+                "version_status": result.get("version_status", package.get("version_status")),
+                "provisional": provisional,
+                "priority_reason": pending_reason,
+                "application_status": application_status,
+                "runtime_applicability": risk.get("runtime_applicability", "not_evaluated"),
+                "weights": risk.get("weights"),
+                "score_breakdown": risk.get("contributions"),
+                "cvss_source": cvss.get("source"),
                 "match_status": match_status,
                 "status": risk.get("status"),
                 "review_required": bool(review_reasons),
@@ -69,6 +82,7 @@ def to_cyclonedx_risk(priority):
             priority.get("priority_model") or {}
         ).get("model_id", "unknown"),
         "generated_at": priority.get("source_generated_at"),
+        "priority_model": priority.get("priority_model"),
         "coverage_note": (
             "Includes locally validated affected findings only. "
             "Unknown and unaffected findings remain in the"
