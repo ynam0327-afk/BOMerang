@@ -28,6 +28,7 @@ class PythonParser:
 
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
+        self._available_versions_cache = {}
         self._declared_exact_versions = {}
         self.declarations = []
         self.declaration_errors = []
@@ -102,6 +103,8 @@ class PythonParser:
                         self._declared_exact_versions.setdefault(name, set()).add(version)
 
     def parse(self, file_path: str) -> list[DependencyNode]:
+        # Version lists belong to this analysis, including referenced files.
+        self._available_versions_cache = {}
         self._declared_exact_versions = {}
         self.declarations = []
         self.declaration_errors = []
@@ -497,9 +500,13 @@ class PythonParser:
             return None
 
         try:
-            available_versions = self.pypi_client.get_available_versions(
-                requirement.name
-            )
+            name = canonicalize_name(requirement.name)
+            if name not in self._available_versions_cache:
+                # Store only successful lookups; exceptions remain retryable.
+                self._available_versions_cache[name] = (
+                    self.pypi_client.get_available_versions(requirement.name)
+                )
+            available_versions = self._available_versions_cache[name]
         except RuntimeError:
             raise # 오류 삼키기 방지 -- UP
 
