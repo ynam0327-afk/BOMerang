@@ -27,7 +27,7 @@ MAIN = [
     "test_python_dependency_conflicts.py",
 ]
 SUITES = [
-    ("main", MAIN, ["python-parser", "python-security-integration"], 337),
+    ("main", MAIN, ["python-parser", "python-security-integration"], 340),
     ("security-review", ["src/main/java/com/bomerang/test_" + name + ".py" for name in
         ["week7", "normalize_week7", "osv_version_matcher", "maven_versions", "maven_qualifiers",
          "evaluation_metrics", "rebuild_selected_graph", "review_priorities", "risk_model"]],

@@ -127,7 +127,8 @@ def parse_pyproject(file_path: str) -> list[tuple[Requirement, str]]:
 # Additive static-declaration API. parse_pyproject above retains its graph contract.
 def make_declaration(raw, scope, source_file, locator, *, kind="runtime",
                      group=None, optional=False, graph_enabled=True,
-                     include_path=(), origin_group=None, requirement=None):
+                     include_path=(), origin_group=None, requirement=None,
+                     resolved_source=None):
     import hashlib
     import json
     from packaging.utils import canonicalize_name
@@ -150,7 +151,8 @@ def make_declaration(raw, scope, source_file, locator, *, kind="runtime",
                     break
             except Exception:
                 continue
-    source = str(Path(source_file).resolve())
+    # Callers may reuse a canonical source already resolved for this document.
+    source = str(Path(source_file).resolve()) if resolved_source is None else resolved_source
     key = json.dumps([source, locator, scope, list(include_path)], ensure_ascii=True)
     return {
         "declaration_id": hashlib.sha256(key.encode()).hexdigest(),
@@ -180,9 +182,10 @@ def parse_pyproject_document(file_path):
     with path.open("rb") as stream:
         data = tomllib.load(stream)
     declarations, errors = [], []
+    resolved_source = str(path.resolve())
 
     def error(locator, raw, message, category="invalid_declaration"):
-        errors.append({"source_file": str(path.resolve()), "source_locator": locator,
+        errors.append({"source_file": resolved_source, "source_locator": locator,
                        "raw_declaration": raw, "category": category, "message": message,
                        "marker_status": "error" if category == "invalid_marker" else None})
 
@@ -191,7 +194,8 @@ def parse_pyproject_document(file_path):
             error(locator, raw, "Dependency must be a PEP 508 string")
             return
         try:
-            declaration = make_declaration(raw, scope, path, locator, **metadata)
+            declaration = make_declaration(raw, scope, path, locator,
+                                           resolved_source=resolved_source, **metadata)
             declarations.append(declaration)
             if declaration["marker_error"]:
                 error(locator, raw, declaration["marker_error"], "invalid_marker")
@@ -295,7 +299,8 @@ def parse_pyproject_document(file_path):
                 req = _parse_poetry_dependency(name, version)
                 declaration = make_declaration(
                     version, scope, path, locator + "." + name, kind="poetry",
-                    group=None if scope == "runtime" else scope, requirement=req)
+                    group=None if scope == "runtime" else scope, requirement=req,
+                    resolved_source=resolved_source)
                 declaration["original_key"] = name
                 declarations.append(declaration)
             except Exception as exc:

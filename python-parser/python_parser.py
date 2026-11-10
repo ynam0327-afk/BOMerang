@@ -210,7 +210,8 @@ class PythonParser:
                 # 패키지
                 elif result_type == "package":
                     declaration = make_declaration(
-                        line.strip(), None, file_path, f"line:{line_number}", kind="requirements")
+                        line.strip(), None, file_path, f"line:{line_number}", kind="requirements",
+                        resolved_source=str(file_path))
                     self.declarations.append(declaration)
                     if not declaration["active_in_graph"]:
                         continue
@@ -490,15 +491,16 @@ class PythonParser:
         from packaging.requirements import Requirement
         from packaging.utils import canonicalize_name
         packages = {}
+        versioned_by_name = {}
         for node in nodes.values():
             node.declarations = []
+            if node.resolved_version is not None:
+                versioned_by_name.setdefault(canonicalize_name(node.name), []).append(node)
         for declaration in self.declarations:
             req = Requirement(declaration["requirement"])
             version = self._get_resolved_version(req)
-            candidates = [node for node in nodes.values()
-                          if canonicalize_name(node.name) == declaration["name"]
-                          and node.resolved_version is not None
-                          and (not req.specifier or req.specifier.contains(node.resolved_version))]
+            candidates = [node for node in versioned_by_name.get(declaration["name"], [])
+                          if not req.specifier or req.specifier.contains(node.resolved_version)]
             if version is None and declaration["active_in_graph"] and len(candidates) == 1:
                 version = candidates[0].resolved_version
             declaration["resolved_version"] = version

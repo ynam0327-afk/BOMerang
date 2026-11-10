@@ -35,7 +35,7 @@ jobs:
       - name: Install pinned verification dependencies
         run: python -m pip install -r ci/requirements.txt
 
-      - name: Run 458 isolated regressions, Flask and offline CycloneDX checks
+      - name: Run 461 isolated regressions, Flask and offline CycloneDX checks
         # Compiles Java 17 sources in a disposable copy, never checkout target/classes.
         # Three fresh pytest processes prevent collisions among legacy module copies.
         run: python -B ci/run_checks.py --output test-results/verification
