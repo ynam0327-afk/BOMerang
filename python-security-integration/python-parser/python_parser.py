@@ -1,4 +1,5 @@
 from packaging.version import Version
+from packaging.utils import canonicalize_name
 from pathlib import Path
 
 from toml_parser import parse_pyproject
@@ -25,6 +26,7 @@ class PythonParser:
 
     def __init__(self, pypi_client=None):
         self.pypi_client = pypi_client or PyPIClient()
+        self._version_list_cache = {}
 
     def _is_applicable(self, requirement) -> bool:
         """현재 실행 환경에서 적용되는 의존성인지 확인한다."""
@@ -40,6 +42,7 @@ class PythonParser:
     }# 2차 : requirements.txt + toml 지원
 
     def parse(self, file_path: str) -> list[DependencyNode]:
+        self._version_list_cache = {}
         visited_files = set() # 파일 순환 참조 방지 (!= 패키지 순환)
         nodes = {} # 최종 DependencyNode 저장
 
@@ -296,9 +299,13 @@ class PythonParser:
             return None
 
         try:
-            available_versions = self.pypi_client.get_available_versions(
-                requirement.name
-            )
+            cache_key = canonicalize_name(requirement.name)
+            if cache_key not in self._version_list_cache:
+                versions = list(self.pypi_client.get_available_versions(
+                    requirement.name
+                ))
+                self._version_list_cache[cache_key] = versions
+            available_versions = self._version_list_cache[cache_key]
         except RuntimeError:
             raise # 오류 삼키기 방지 -- UP
 
