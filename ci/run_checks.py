@@ -32,7 +32,7 @@ SUITES = [
          "evaluation_metrics", "rebuild_selected_graph", "review_priorities", "risk_model"]],
      ["src/main/java/com/bomerang"], 95),
     ("legacy-parser", ["python-security-integration/python-parser/test"],
-     ["python-security-integration/python-parser"], 26),
+     ["python-security-integration/python-parser"], 31),
 ]
 
 
