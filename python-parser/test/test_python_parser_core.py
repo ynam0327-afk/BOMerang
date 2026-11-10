@@ -361,7 +361,7 @@ def test_transitive_dependency_reports_version_conflict():
     assert "No compatible direct dependency version" in error
 
 
-def test_transitive_dependency_selects_latest_compatible_direct_version():
+def test_transitive_dependency_reports_multiple_direct_versions():
     parser = PythonParser()
     parser._declared_exact_versions = {
         "urllib3": {"2.1.0", "2.3.0"}
@@ -371,8 +371,8 @@ def test_transitive_dependency_selects_latest_compatible_direct_version():
         Requirement("urllib3>=2.0")
     )
 
-    assert version == "2.3.0"
-    assert error is None
+    assert version is None
+    assert "Multiple direct dependency versions" in error
 
 
 def test_transitive_dependency_reuses_direct_version(tmp_path):

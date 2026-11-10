@@ -7,7 +7,7 @@ from packaging.version import Version
 
 def now():return datetime.now(timezone.utc).isoformat()
 
-def parse_python_file(path,client=None,*,metadata=None):
+def parse_python_file(path,client=None,*,metadata=None,project_files=None):
     from python_parser import PythonParser
     from pypi_client import PyPIClient
     class RecordingClient:
@@ -34,9 +34,24 @@ def parse_python_file(path,client=None,*,metadata=None):
                     'version_status':'unresolved' if selected is None else 'confirmed' if pinned is not None else 'estimated',
                     'selection_policy':'latest_in_range' if selected is not None and pinned is None else None,'version_evidence':evidence,
                     'resolution_queried_at':evidence.get('queried_at')})
+        def _resolve_transitive_version(self, requirement):
+            version, error = super()._resolve_transitive_version(requirement)
+            name = canonicalize_name(requirement.name)
+            pins = self._declared_exact_versions.get(name, set())
+            if version is not None and len(pins) == 1:
+                sources = sorted(self._declared_version_sources.get(name, {}).get(version, set()))
+                self.observations.append({
+                    "name": name, "declared_version": str(requirement.specifier) or None,
+                    "resolved_version": version, "version_status": "confirmed", "selection_policy": None,
+                    "version_evidence": {"kind": "declared_exact", "source_file": sources[0] if sources else str(path),
+                                         "direct_pin_sources": sources},
+                    "resolution_queried_at": None,
+                })
+            return version, error
     parser=RecordingParser()
     # Parser debug output must not corrupt the common JSON file.
-    with contextlib.redirect_stdout(io.StringIO()):nodes=parser.parse(str(path))
+    with contextlib.redirect_stdout(io.StringIO()):
+        nodes=parser.parse(str(path), project_files=project_files) if project_files is not None else parser.parse(str(path))
     mapping={n.purl:'pkg:pypi/'+canonicalize_name(n.name)+('@'+n.resolved_version if n.resolved_version else '') for n in nodes}
     rows=[]
     for node in nodes:
@@ -52,7 +67,7 @@ def parse_python_file(path,client=None,*,metadata=None):
         row['declared_versions']=sorted({o['declared_version'] for o in observations if o['declared_version']})
         if estimated:row['declared_version']=estimated[0]['declared_version']
         row['source_files']=[str(path)]
-        row['graph_resolution_status']='partial_parse_error' if node.parse_status=='error' else 'parser_result_not_independent_environment_validation'
+        row['graph_resolution_status']='dependency_conflict' if row.get('dependency_conflicts') else 'partial_parse_error' if node.parse_status=='error' else 'parser_result_not_independent_environment_validation'
         row['resolution_error']=node.error_message if node.resolved_version is None else None
         row['parser_error']=node.error_message
         rows.append(row)
@@ -60,7 +75,8 @@ def parse_python_file(path,client=None,*,metadata=None):
         metadata.update(
             declarations=getattr(parser, "declarations", []),
             declaration_packages=getattr(parser, "declaration_packages", []),
-            declaration_errors=getattr(parser, "declaration_errors", []))
+            declaration_errors=getattr(parser, "declaration_errors", []),
+            dependency_conflicts=getattr(parser, "dependency_conflicts", []))
     return rows
 
 
@@ -104,4 +120,8 @@ def merge_packages(rows):
             for k in ('version_status','selection_policy','version_evidence','resolution_queried_at','declared_version'):old[k]=row.get(k)
         old['version_observations']=old.get('version_observations',[])+row.get('version_observations',[])
         if row.get('parse_status')=='error':old.update(parse_status='error',parser_error=row.get('parser_error'),graph_resolution_status='partial_parse_error')
+        conflicts = old.get('dependency_conflicts', []) + row.get('dependency_conflicts', [])
+        if conflicts:
+            old['dependency_conflicts'] = list({json.dumps(c, sort_keys=True): c for c in conflicts}.values())
+            old['graph_resolution_status'] = 'dependency_conflict'
     return list(merged.values())

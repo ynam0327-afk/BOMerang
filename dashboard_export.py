@@ -46,6 +46,8 @@ def export(document):
             counts['priority_' + finding['priority_status']] += 1
         lookup = row.get('lookup_status', 'unknown')
         counts['lookup_' + lookup] += 1
+        if package.get('dependency_conflicts'):
+            counts['dependency_conflict_packages'] += 1
         packages.append({
             'purl': package['purl'], 'name': package['name'],
             'group': package.get('group'), 'ecosystem': package.get('ecosystem'),
@@ -57,6 +59,8 @@ def export(document):
             'depth': package.get('depth'),
             'scopes': package.get('scopes', [package['scope']] if package.get('scope') else []),
             'dependencies': copy.deepcopy(package.get('dependencies', [])),
+            'graph_resolution_status': package.get('graph_resolution_status', 'parser_result_not_independent_environment_validation'),
+            'dependency_conflicts': copy.deepcopy(package.get('dependency_conflicts', [])),
             'findings': findings,
         })
     return {

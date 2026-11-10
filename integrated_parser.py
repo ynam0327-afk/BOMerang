@@ -20,17 +20,20 @@ def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=Fa
     if not project_dir.is_dir():raise ValueError(f'Not a directory: {project_dir}')
     excluded={'.git','target','.venv','venv','__pycache__','.pytest_cache','out',*(exclude_dirs or [])}
     rows=[];files=[];logs=[]
-    declarations=[];declaration_packages=[];declaration_errors=[]
-    for path in sorted(project_dir.rglob('*')):
-        if not path.is_file() or any(p in excluded for p in path.relative_to(project_dir).parts):continue
+    declarations=[];declaration_packages=[];declaration_errors=[];conflicts=[]
+    selected_files = [path for path in sorted(project_dir.rglob('*'))
+                      if path.is_file() and not any(p in excluded for p in path.relative_to(project_dir).parts)]
+    python_files = [path for path in selected_files if path.name in {'requirements.txt', 'pyproject.toml'}]
+    for path in selected_files:
         source=str(path.relative_to(project_dir))
         if path.name in {'requirements.txt','pyproject.toml'}:
             files.append(source)
             metadata={}
-            rows.extend(parse_python_file(path,pypi_client,metadata=metadata))
+            rows.extend(parse_python_file(path,pypi_client,metadata=metadata,project_files=python_files))
             declarations.extend(metadata['declarations'])
             declaration_packages.extend(metadata['declaration_packages'])
             declaration_errors.extend(metadata['declaration_errors'])
+            conflicts.extend(metadata['dependency_conflicts'])
         elif path.name in {'pom.xml','build.gradle','build.gradle.kts'}:
             files.append(source)
             command=[os.getenv('BOMERANG_JAVA','java'),'-Dfile.encoding=UTF-8','-cp',str(java_classes),'com.bomerang.JsonDependencyExporter',str(path)]
@@ -44,15 +47,28 @@ def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=Fa
             for item in items:
                 item['source_files']=sorted(set(item.get('source_files',[]))|{str(path)})
                 rows.append(item)
+    # A conflict discovered in one file also applies to the retained direct
+    # package declared in another selected file.
+    from packaging.utils import canonicalize_name
+    for row in rows + declaration_packages:
+        if str(row.get('ecosystem', '')).lower() != 'pypi':
+            continue
+        relevant = [c for c in conflicts if canonicalize_name(row['name']) == c['required_package']
+                    or row['purl'] == c['requiring_purl']]
+        if relevant:
+            row['dependency_conflicts'] = list({json.dumps(c, sort_keys=True): c
+                for c in row.get('dependency_conflicts', []) + relevant}.values())
+            row['graph_resolution_status'] = 'dependency_conflict'
     from packaging.markers import default_environment
     return {'files':files,'dependencies':merge_packages(rows),'parser_logs':logs,
+            'dependency_conflicts':list({json.dumps(c,sort_keys=True):c for c in conflicts}.values()),
             'declarations':merge_declarations(declarations),
             'declaration_packages':merge_packages(declaration_packages),
             'declaration_errors':list({json.dumps(e,sort_keys=True):e for e in declaration_errors}.values()),
             'python_marker_environment':default_environment(),
             'analysis_notes':['Current-environment Python markers; not a whole-project version solver.',
                               'Java BOM/scope/exclusion behavior follows existing exporter.',
-                              'Root constraints and Python extras merging retain original parser limitations.']}
+                              'Direct Python pins are shared across files selected for this analysis; independent environments require separate analyses.']}
 
 
 def main():

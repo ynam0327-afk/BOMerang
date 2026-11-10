@@ -19,10 +19,10 @@ Maven 전이 의존성 테스트는 127.0.0.1의 fixture HTTP 서버만 사용�
 
 | 프로세스 | PYTHONPATH | 예상 통과 |
 |---|---|---:|
-| main | python-parser + python-security-integration | 317 |
+| main | python-parser + python-security-integration | 337 |
 | security-review | src/main/java/com/bomerang | 95 |
 | legacy-parser | python-security-integration/python-parser | 26 |
-| 합계 | 별도 프로세스, importlib 수집 | 438 |
+| 합계 | 별도 프로세스, importlib 수집 | 458 |
 
 각 프로세스에 `--import-mode=importlib -p no:cacheprovider -q`를 적용합니다.
 PYTEST_ADDOPTS를 제거하고 PYTHONDONTWRITEBYTECODE=1을 적용합니다.

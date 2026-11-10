@@ -30,6 +30,8 @@ class PythonParser:
         self.pypi_client = pypi_client or PyPIClient()
         self._available_versions_cache = {}
         self._declared_exact_versions = {}
+        self._declared_version_sources = {}
+        self.dependency_conflicts = []
         self.declarations = []
         self.declaration_errors = []
         self.declaration_packages = []
@@ -74,6 +76,7 @@ class PythonParser:
                 if version is not None:
                     name = canonicalize_name(requirement.name)
                     self._declared_exact_versions.setdefault(name, set()).add(version)
+                    self._declared_version_sources.setdefault(name, {}).setdefault(version, set()).add(str(file_path))
 
             return
 
@@ -101,19 +104,23 @@ class PythonParser:
                     if version is not None:
                         name = canonicalize_name(value.name)
                         self._declared_exact_versions.setdefault(name, set()).add(version)
+                        self._declared_version_sources.setdefault(name, {}).setdefault(version, set()).add(str(file_path))
 
-    def parse(self, file_path: str) -> list[DependencyNode]:
+    def parse(self, file_path: str, *, project_files=None) -> list[DependencyNode]:
         # Version lists belong to this analysis, including referenced files.
         self._available_versions_cache = {}
         self._declared_exact_versions = {}
+        self._declared_version_sources = {}
+        self.dependency_conflicts = []
         self.declarations = []
         self.declaration_errors = []
         self.declaration_packages = []
 
-        self._collect_declared_versions(
-            Path(file_path).resolve(),
-            set()
-        )
+        # All inputs selected by one integrated analysis share direct pins.
+        # Only constraints are collected here; graph traversal remains per file.
+        collected_files = set()
+        for direct_file in [file_path, *(project_files or [])]:
+            self._collect_declared_versions(Path(direct_file).resolve(), collected_files)
        
         visited_files = set() # 파일 순환 참조 방지 (!= 패키지 순환)
         nodes = {} # 최종 DependencyNode 저장
@@ -127,6 +134,7 @@ class PythonParser:
         )
 
         self._merge_unresolved_nodes(nodes)
+        self._apply_dependency_conflicts(nodes)
         self._finalize_declarations(nodes)
 
         return list(nodes.values())
@@ -226,7 +234,8 @@ class PythonParser:
         expanded_nodes: set,
         scope: str | None = None,
         resolved_version = _UNSET,
-        resolution_error: RuntimeError | None = None
+        resolution_error: RuntimeError | str | None = None,
+        requiring_purl: str | None = None
     ):
         name = requirement.name
         declared_version = self._get_declared_version(requirement)
@@ -236,10 +245,18 @@ class PythonParser:
                 resolved_version = None
             else:
                 try:
-                    resolved_version = self._resolve_version(requirement)
+                    if (self._get_resolved_version(requirement) is None
+                            and canonicalize_name(name) in self._declared_exact_versions):
+                        resolved_version, resolution_error = self._resolve_transitive_version(requirement)
+                    else:
+                        resolved_version = self._resolve_version(requirement)
                 except RuntimeError as e:
                     resolved_version = None # 다음 노드 생성 코드 진행 가능
                     resolution_error = e
+
+        conflict = self._direct_pin_conflict(requirement, source_file, requiring_purl)
+        if conflict is not None and conflict not in self.dependency_conflicts:
+            self.dependency_conflicts.append(conflict)
 
         purl = make_purl(
             name,
@@ -352,7 +369,8 @@ class PythonParser:
                     expanded_nodes,
                     scope=scope,
                     resolved_version=dependency_resolved_version,
-                    resolution_error=dependency_resolution_error
+                    resolution_error=dependency_resolution_error,
+                    requiring_purl=purl
                 )
         except RuntimeError as e:
             node.parse_status = "error"
@@ -431,6 +449,42 @@ class PythonParser:
             del nodes[old_purl]
 
 
+    def _direct_pin_conflict(self, requirement, source_file, requiring_purl):
+        name = canonicalize_name(requirement.name)
+        versions = sorted(self._declared_exact_versions.get(name, set()), key=Version)
+        if not versions:
+            return None
+        if len(versions) > 1:
+            reason = "multiple_direct_pins"
+        elif requirement.specifier and not requirement.specifier.contains(Version(versions[0]), prereleases=False):
+            reason = "incompatible_direct_pin"
+        else:
+            return None
+        return {
+            "required_package": name,
+            "required_specifier": str(requirement.specifier) or None,
+            "requiring_purl": requiring_purl,
+            "selected_version": None,
+            "direct_versions": versions,
+            "reason": reason,
+            "source_file": str(source_file.resolve()),
+            "direct_sources": [
+                {"version": version, "source_file": source}
+                for version in versions
+                for source in sorted(self._declared_version_sources.get(name, {}).get(version, set()))
+            ],
+        }
+
+    def _apply_dependency_conflicts(self, nodes):
+        for node in nodes.values():
+            node.dependency_conflicts = [
+                conflict for conflict in self.dependency_conflicts
+                if canonicalize_name(node.name) == conflict["required_package"]
+                or node.purl == conflict["requiring_purl"]
+            ]
+            if node.dependency_conflicts:
+                node.graph_resolution_status = "dependency_conflict"
+
     def _finalize_declarations(self, nodes):
         """Link observed graph versions without resolving optional/static entries."""
         from packaging.requirements import Requirement
@@ -461,6 +515,9 @@ class PythonParser:
                 "scope": declaration["scope"], "parse_status": "success",
                 "usage_status": "declaration_inventory_not_installed_graph",
             })
+            if purl in nodes and declaration["active_in_graph"]:
+                package["dependency_conflicts"] = list(nodes[purl].dependency_conflicts)
+                package["graph_resolution_status"] = nodes[purl].graph_resolution_status
             package["declarations"].append(declaration)
             if declaration["source_file"] not in package["source_files"]:
                 package["source_files"].append(declaration["source_file"])
@@ -534,35 +591,22 @@ class PythonParser:
         name = canonicalize_name(requirement.name)
         pinned_versions = self._declared_exact_versions.get(name, set())
 
-        # 직접 의존성의 정확한 버전이 없으면 기존 로직 사용
         if not pinned_versions:
             try:
                 return self._resolve_version(requirement), None
             except RuntimeError as exc:
                 return None, str(exc)
 
-        # 하위 의존성에 버전 조건이 없으면
-        # 직접 의존성의 버전을 재사용한다.
-        if not requirement.specifier:
-            return max(pinned_versions, key=Version), None
+        if len(pinned_versions) > 1:
+            versions = ", ".join(sorted(pinned_versions, key=Version))
+            return None, f"Multiple direct dependency versions for {name}: {versions}"
 
-        # 직접 의존성의 버전 중 조건을 만족하는 버전만 선택
-        compatible_versions = [
-            version
-            for version in pinned_versions
-            if requirement.specifier.contains(
-                Version(version),
-                prereleases=False,
-            )
-        ]
+        version = next(iter(pinned_versions))
+        if not requirement.specifier or requirement.specifier.contains(Version(version), prereleases=False):
+            return version, None
 
-        # 조건을 만족하는 버전이 없으면 충돌 처리
-        if not compatible_versions:
-            versions = ", ".join(sorted(pinned_versions))
-            return None, (
-                f"No compatible direct dependency version for "
-                f"{name}: {versions}, required {requirement.specifier}"
-            )
-
-        # 호환되는 버전 중 가장 최신 버전 선택
-        return max(compatible_versions, key=Version), None
+        # Preserve the direct node and the unresolved requirement separately.
+        return None, (
+            f"No compatible direct dependency version for "
+            f"{name}: {version}, required {requirement.specifier}"
+        )

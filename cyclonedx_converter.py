@@ -76,7 +76,8 @@ def _component(node: dict[str, Any]) -> dict[str, Any]:
     for key in ("ecosystem", "declared_version", "source_file", "depth",
                 "parse_status", "error_message", "is_circular",
                 "scope", "scopes", "optional", "optional_values",
-                "version_status", "selection_policy", "version_evidence"):
+                "version_status", "selection_policy", "version_evidence",
+                "graph_resolution_status", "dependency_conflicts"):
         prop = _property(key, node.get(key))
         if prop is not None and (node.get(key) != "" or isinstance(node.get(key), (list, dict))):
             properties.append(prop)
@@ -239,6 +240,10 @@ def convert_to_cyclonedx(
             if not isinstance(existing_refs, list) or not isinstance(added_refs, list):
                 raise ValueError(f"'dependencies' for {purl} must be a list")
             nodes_by_ref[purl]["dependencies"] = existing_refs + added_refs
+            conflicts = nodes_by_ref[purl].get("dependency_conflicts", []) + node.get("dependency_conflicts", [])
+            if conflicts:
+                nodes_by_ref[purl]["dependency_conflicts"] = list({json.dumps(c, sort_keys=True): c for c in conflicts}.values())
+                nodes_by_ref[purl]["graph_resolution_status"] = "dependency_conflict"
 
     components = [_component(node) for node in nodes_by_ref.values()]
     dependencies = []
