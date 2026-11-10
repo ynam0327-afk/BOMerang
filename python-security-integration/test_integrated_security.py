@@ -15,7 +15,7 @@ class FakePyPI:
         return [Requirement('child>=1,<2')] if name=='parent' else []
 class FakeSecurity:
     def osv(self,ecosystem,name,version):
-        return [{'id':'FIXTURE-'+name,'aliases':['CVE-2099-12345'],'affected':[{'package':{'ecosystem':ecosystem,'name':name},'ranges':[{'type':'ECOSYSTEM','events':[{'introduced':'0'},{'fixed':'2.0'}]}]}]}]
+        return [{'id':'FIXTURE-'+name,'aliases':['CVE-2099-12345'],'affected':[{'package':{'ecosystem':ecosystem,'name':name},'versions':[version] if ecosystem=='Maven' else [],'ranges':[{'type':'ECOSYSTEM','events':[{'introduced':'0'},{'fixed':'2.0'}]}]}]}]
     def nvd(self,cve):return [{'cve':{'id':cve,'metrics':{'cvssMetricV31':[{'source':'fixture','cvssData':{'version':'3.1','baseScore':8.0}}]}}}]
 class Tests(unittest.TestCase):
     def parse(self,text,name='requirements.txt'):

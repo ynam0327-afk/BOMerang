@@ -51,7 +51,7 @@ def normalize(packages,document):
                   'fix_note':'Candidates span release branches; not an upgrade recommendation.',
                   'cvss_metrics':metrics,'descriptions':descriptions,'osv_source_records':records,'nvd_enrichment':enriched}
             items.append(item)
-        output.append({'package':p,'version_status':row['version_status'],'lookup_status':row['lookup_status'],'reason':row.get('reason'),'queried_at':row.get('queried_at'),'vulnerabilities':items})
+        output.append({'package':p,'version_status':row['version_status'],'lookup_status':row['lookup_status'],'reason':row.get('reason'),'queried_at':row.get('queried_at'),'security_assessment_status':row.get('security_assessment_status'),'security_assessment_reason':row.get('security_assessment_reason'),'vulnerabilities':items})
         checks.append({'package':name,'input_records':len(row['vulnerabilities']),'normalized_records':len(items),'explicit_version_matches':sum(i['version_match']=='explicit_affected_version' for i in items)})
     if {r['package']['purl'] for r in output}!=set(expected):raise ValueError('Missing package scan result')
     return {'schema_version':'week7-normalized-1','source_generated_at':document.get('generated_at'),'validation':checks,'results':output}

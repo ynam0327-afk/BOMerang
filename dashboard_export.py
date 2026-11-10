@@ -31,6 +31,7 @@ def export(document):
                 'id': item['canonical_id'],
                 'aliases': sorted(set(item.get('all_ids', item.get('aliases', []))) - {item['canonical_id']}),
                 'version_match': match,
+                'version_match_evidence': copy.deepcopy(item.get('local_version_validation', {})),
                 'priority_status': priority.get('status', 'pending'),
                 'priority_score': priority.get('priority_score'),
                 'priority_reason': priority.get('reason'),
@@ -55,6 +56,13 @@ def export(document):
             'resolved_version': package.get('resolved_version'),
             'version_status': row.get('version_status', package.get('version_status', 'unresolved')),
             'lookup_status': lookup, 'lookup_reason': row.get('reason'),
+            'security_assessment_status': row.get('security_assessment_status') or (
+                'assessed' if lookup in {'vulnerabilities_found', 'no_known_vulnerabilities'} else 'not_assessed'),
+            'security_assessment_reason': row.get('security_assessment_reason') or (
+                row.get('reason') if lookup not in {'vulnerabilities_found', 'no_known_vulnerabilities'} else None),
+            'resolution_reason': package.get('resolution_reason'),
+            'resolution_reasons': copy.deepcopy(package.get('resolution_reasons', [])),
+            'resolution_error': package.get('resolution_error'),
             'queried_at': row.get('queried_at'),
             'depth': package.get('depth'),
             'scopes': package.get('scopes', [package['scope']] if package.get('scope') else []),

@@ -79,15 +79,22 @@ class Client:
 def scan(packages,client,enrich=False):
     rows=[]
     for p in packages:
-        info=version_info(p); row={'package':p,**info,'queried_at':now(),'lookup_status':'skipped','vulnerabilities':[]};rows.append(row)
-        if info['version_status']=='unresolved':continue
+        info=version_info(p); row={'package':p,**info,'queried_at':now(),'lookup_status':'skipped','vulnerabilities':[],
+                                  'security_assessment_status':'not_assessed','security_assessment_reason':None};rows.append(row)
+        if info['version_status']=='unresolved':
+            row['security_assessment_reason']='package_version_unresolved'
+            continue
         eco={'maven':'Maven','pypi':'PyPI','python':'PyPI'}.get(str(p.get('ecosystem','')).lower()); name=p.get('name')
         if eco=='Maven':name=p['group']+':'+name if p.get('group') and name else None
-        if not eco or not name:row['reason']='unsupported_ecosystem_or_missing_coordinates';continue
+        if not eco or not name:
+            row.update(reason='unsupported_ecosystem_or_missing_coordinates',security_assessment_reason='unsupported_ecosystem_or_missing_coordinates')
+            continue
         try:
             records=client.osv(eco,name,info['resolved_version'])
-            row.update(lookup_status='vulnerabilities_found' if records else 'no_known_vulnerabilities',provisional=info['version_status']=='estimated',vulnerabilities=list({v['id']:v for v in records}.values()))
-        except Exception as exc:row.update(lookup_status='lookup_failed',reason=f'{type(exc).__name__}: {exc}');continue
+            row.update(security_assessment_status='assessed',lookup_status='vulnerabilities_found' if records else 'no_known_vulnerabilities',provisional=info['version_status']=='estimated',vulnerabilities=list({v['id']:v for v in records}.values()))
+        except Exception as exc:
+            row.update(lookup_status='lookup_failed',reason=f'{type(exc).__name__}: {exc}',security_assessment_reason='vulnerability_lookup_failed')
+            continue
         if enrich:
             row['nvd_enrichment']=[]
             ids=sorted({i for v in records for i in [v['id'],*v.get('aliases',[])] if re.fullmatch(r'CVE-\d{4}-\d{4,}',i)})

@@ -7,6 +7,21 @@ from packaging.version import Version
 
 def now():return datetime.now(timezone.utc).isoformat()
 
+def _resolution_reason(row):
+    if row.get('resolved_version') is not None:
+        return None
+    if row.get('dependency_conflicts'):
+        return 'dependency_conflict'
+    if row.get('parse_status') == 'error':
+        return 'version_lookup_failed'
+    from packaging.requirements import Requirement
+    if any(Requirement(d['requirement']).url for d in row.get('declarations', [])):
+        return 'unsupported_declaration'
+    if row.get('declared_version'):
+        return 'no_matching_version'
+    return 'missing_version_specifier'
+
+
 def parse_python_file(path,client=None,*,metadata=None,project_files=None):
     from python_parser import PythonParser
     from pypi_client import PyPIClient
@@ -70,6 +85,8 @@ def parse_python_file(path,client=None,*,metadata=None,project_files=None):
         row['graph_resolution_status']='dependency_conflict' if row.get('dependency_conflicts') else 'partial_parse_error' if node.parse_status=='error' else 'parser_result_not_independent_environment_validation'
         row['resolution_error']=node.error_message if node.resolved_version is None else None
         row['parser_error']=node.error_message
+        row['resolution_reason'] = _resolution_reason(row)
+        row['resolution_reasons'] = [row['resolution_reason']] if row['resolution_reason'] else []
         rows.append(row)
     if metadata is not None:
         metadata.update(
@@ -120,6 +137,15 @@ def merge_packages(rows):
             for k in ('version_status','selection_policy','version_evidence','resolution_queried_at','declared_version'):old[k]=row.get(k)
         old['version_observations']=old.get('version_observations',[])+row.get('version_observations',[])
         if row.get('parse_status')=='error':old.update(parse_status='error',parser_error=row.get('parser_error'),graph_resolution_status='partial_parse_error')
+        reasons = set(old.get('resolution_reasons', [])) | set(row.get('resolution_reasons', []))
+        reasons.update(r['resolution_reason'] for r in (old, row) if r.get('resolution_reason'))
+        if reasons:
+            old['resolution_reasons'] = sorted(reasons)
+            old['resolution_reason'] = next((r for r in (
+                'dependency_conflict', 'version_lookup_failed', 'no_matching_version',
+                'unsupported_declaration', 'missing_version_specifier') if r in reasons), sorted(reasons)[0])
+        if row.get('resolution_error'):
+            old['resolution_error'] = row['resolution_error']
         conflicts = old.get('dependency_conflicts', []) + row.get('dependency_conflicts', [])
         if conflicts:
             old['dependency_conflicts'] = list({json.dumps(c, sort_keys=True): c for c in conflicts}.values())
