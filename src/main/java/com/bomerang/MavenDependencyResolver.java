@@ -38,7 +38,7 @@ public class MavenDependencyResolver {
     ) throws Exception {
         Model model = loadModel(pomFile, 0, new HashSet<>());
         rootManagedVersions = new HashMap<>(model.versions);
-        return mavenParser.parse(pomFile, model.properties, model.versions);
+        return mavenParser.parse(pomFile, model.properties, model.versions, model.scopes);
     }
 
     public void resolve(
@@ -108,7 +108,7 @@ public class MavenDependencyResolver {
 
             Model model = loadModel(downloadedPom.toFile(), 0, new HashSet<>());
             List<DependencyNode> parsedChildren = mavenParser.parse(
-                    downloadedPom.toFile(), model.properties, model.versions);
+                    downloadedPom.toFile(), model.properties, model.versions, model.scopes);
 
             for (DependencyNode parsedChild
                     : parsedChildren) {
@@ -195,9 +195,11 @@ public class MavenDependencyResolver {
     private static final class Model {
         final Map<String, String> properties;
         final Map<String, String> versions;
-        Model(Map<String, String> properties, Map<String, String> versions) {
+        final Map<String, String> scopes;
+        Model(Map<String, String> properties, Map<String, String> versions, Map<String, String> scopes) {
             this.properties = properties;
             this.versions = versions;
+            this.scopes = scopes;
         }
     }
 
@@ -206,22 +208,28 @@ public class MavenDependencyResolver {
         if (level >= 30) throw new IllegalStateException("POM inheritance/BOM depth exceeded");
         Map<String, String> properties = new HashMap<>();
         Map<String, String> versions = new HashMap<>();
+        Map<String, String> scopes = new HashMap<>();
         Optional<DependencyNode> parent = mavenParser.parseParent(pom);
         if (parent.isPresent()) {
             Model inherited = loadRemoteModel(parent.get(), level + 1, path);
             properties.putAll(inherited.properties);
             versions.putAll(inherited.versions);
+            scopes.putAll(inherited.scopes);
         }
         properties.putAll(mavenParser.parseProperties(pom));
         Map<String, String> imports = new HashMap<>();
+        Map<String, String> importedScopes = new HashMap<>();
         for (DependencyNode bom : mavenParser.parseImportedBoms(pom, properties)) {
             Model imported = loadRemoteModel(bom, level + 1, path);
             // Earlier imports win; local declarations override imports below.
             imported.versions.forEach(imports::putIfAbsent);
+            imported.scopes.forEach(importedScopes::putIfAbsent);
         }
         versions.putAll(imports);
         versions.putAll(mavenParser.parseManagedVersions(pom, properties));
-        return new Model(properties, versions);
+        scopes.putAll(importedScopes);
+        scopes.putAll(mavenParser.parseManagedScopes(pom, properties));
+        return new Model(properties, versions, scopes);
     }
 
     private Model loadRemoteModel(DependencyNode node, int level, Set<String> path)
