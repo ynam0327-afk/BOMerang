@@ -176,6 +176,10 @@ public class MavenDependencyResolver {
         }
     }
 
+    public Map<String, String> managedVersionsFor(DependencyNode bom) throws Exception {
+        return new HashMap<>(loadRemoteModel(bom, 0, new HashSet<>()).versions);
+    }
+
     private Map<String, String> rootManagedVersions = Map.of();
 
     private boolean isExcluded(DependencyNode node, Set<String> exclusions) {

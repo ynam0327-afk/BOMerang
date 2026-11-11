@@ -50,6 +50,14 @@ public class JsonDependencyExporter {
             }
         } else {
             roots = new ParserFactory().getParser(file).parse(file);
+            if (remote && (file.getName().equalsIgnoreCase("build.gradle")
+                    || file.getName().equalsIgnoreCase("build.gradle.kts"))) {
+                java.io.PrintStream original = System.out;
+                try {
+                    System.setOut(System.err);
+                    GradleManagedVersions.resolve(file, roots);
+                } finally { System.setOut(original); }
+            }
         }
         System.out.println(export(roots, file.getName()));
     }
@@ -89,8 +97,9 @@ public class JsonDependencyExporter {
     }
 
     private static String purl(DependencyNode node) {
-        return "pkg:maven/" + node.getGroupId() + "/" + node.getArtifactId()
-                + "@" + node.getVersion();
+        String base = "pkg:maven/" + node.getGroupId() + "/" + node.getArtifactId();
+        String version = node.getVersion();
+        return version == null || version.isBlank() ? base : base + "@" + version;
     }
 
     private static final class Visit {
@@ -135,6 +144,10 @@ public class JsonDependencyExporter {
             if ("estimated".equals(node.getVersionStatus())) {
                 json.append("{\"kind\":\"registry_latest_in_range\",\"candidate_policy\":\"numeric_releases_only\",\"url\":")
                     .append(quote(node.getMetadataUrl())).append(",\"metadata_sha256\":").append(quote(node.getMetadataHash())).append("},");
+            } else if (node.getGradleManagedSource() != null) {
+                json.append("{\"kind\":\"gradle_bom_management\",\"bom\":")
+                    .append(quote(node.getGradleManagedSource())).append(",\"source_file\":")
+                    .append(quote(source)).append("},");
             } else if ("confirmed".equals(node.getVersionStatus())) {
                 json.append("{\"kind\":\"declared_exact_after_pom_management\",\"source_file\":").append(quote(source)).append("},");
             } else json.append("null,");

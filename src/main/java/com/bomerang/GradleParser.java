@@ -19,13 +19,13 @@ public class GradleParser implements DependencyParser {
      */
     private static final Pattern DEPENDENCY_PATTERN =
         Pattern.compile(
-                "^[\\t ]*"
-                + "(implementation|api|compileOnly|runtimeOnly"
-                + "|testImplementation|testRuntimeOnly)"
-                + "[\\t ]*\\(?\\s*"
-                + "[\"']([^:\"']+):([^:\"']+):([^\"']+)[\"']"
-                + "(?:\\s*\\))?",
-                Pattern.MULTILINE
+            "(?:^|(?<=[{;]))[\\t ]*"
+            + "(implementation|api|compileOnly|runtimeOnly"
+            + "|testImplementation|testRuntimeOnly)"
+            + "[\\t ]*\\(?\\s*"
+            + "[\"']([^:\"'\\s]+):([^:\"'\\s]+)(?::([^\"'\\s]+))?[\"']"
+            + "(?:\\s*\\))?",
+            Pattern.MULTILINE
         );
 
     @Override
@@ -53,6 +53,7 @@ public class GradleParser implements DependencyParser {
             String groupId = matcher.group(2);
             String artifactId = matcher.group(3);
             String version = matcher.group(4);
+            if (version == null) version = "";
 
             String scope =
                     convertConfigurationToScope(configuration);

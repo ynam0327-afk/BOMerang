@@ -37,7 +37,7 @@ def analyze(project_dir:Path,java_classes:Path,pypi_client=None,resolve_maven=Fa
         elif path.name in {'pom.xml','build.gradle','build.gradle.kts'}:
             files.append(source)
             command=[os.getenv('BOMERANG_JAVA','java'),'-Dfile.encoding=UTF-8','-cp',str(java_classes),'com.bomerang.JsonDependencyExporter',str(path)]
-            if resolve_maven and path.name=='pom.xml':command.append('--resolve-maven')
+            if resolve_maven and path.name in {'pom.xml','build.gradle','build.gradle.kts'}:command.append('--resolve-maven')
             completed=subprocess.run(command,capture_output=True,text=True,encoding='utf-8',errors='replace',check=True,timeout=300)
             if resolve_maven and ('[X]' in completed.stderr or any(line.startswith('[!] POM ') for line in completed.stderr.splitlines())):
                 raise RuntimeError(f'Maven remote resolution incomplete for {path}:\n{completed.stderr}')

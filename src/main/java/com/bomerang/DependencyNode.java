@@ -28,6 +28,15 @@ public class DependencyNode {
     }
     public void failVersionResolution(String reason) { versionStatus="unresolved";resolutionError=reason; }
 
+    private String gradleManagedSource;
+    public String getGradleManagedSource() { return gradleManagedSource; }
+    public void applyGradleManagedVersion(String selected, String bom) {
+        version = selected;
+        versionStatus = "confirmed";
+        resolutionError = null;
+        gradleManagedSource = bom;
+    }
+
     private String scope;
     private boolean optional;
     private int depth;
