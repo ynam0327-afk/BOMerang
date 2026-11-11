@@ -325,6 +325,21 @@ public class MavenParser implements DependencyParser {
         Element projectElement =
                 document.getDocumentElement();
 
+        // Maven model coordinates used by imported BOM properties.
+        Element modelParent = getDirectChildElement(projectElement, "parent");
+        for (String key : new String[]{"groupId", "artifactId", "version"}) {
+            Element valueElement = getDirectChildElement(projectElement, key);
+            if (valueElement == null && !"artifactId".equals(key) && modelParent != null)
+                valueElement = getDirectChildElement(modelParent, key);
+            if (valueElement != null) {
+                String value = valueElement.getTextContent().trim();
+                if (!value.isEmpty()) {
+                    properties.put("project." + key, value);
+                    properties.put("pom." + key, value);
+                }
+            }
+        }
+
         Element propertiesElement =
                 getDirectChildElement(
                         projectElement,
