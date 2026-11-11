@@ -60,6 +60,15 @@ public class MavenParser implements DependencyParser {
             Map<String, String> parentProperties,
             Map<String, String> parentManagedVersions
     ) throws Exception {
+        return parse(file, parentProperties, parentManagedVersions, Map.of());
+    }
+
+    public List<DependencyNode> parse(
+            File file,
+            Map<String, String> parentProperties,
+            Map<String, String> parentManagedVersions,
+            Map<String, String> parentManagedScopes
+    ) throws Exception {
         List<DependencyNode> dependencies =
                 new ArrayList<>();
 
@@ -93,6 +102,8 @@ public class MavenParser implements DependencyParser {
         managedVersions.putAll(
                 childManagedVersions
         );
+        Map<String, String> managedScopes = new HashMap<>(parentManagedScopes);
+        managedScopes.putAll(parseManagedScopes(file, properties));
 
         NodeList dependencyList =
                 document.getElementsByTagName(
@@ -191,7 +202,7 @@ public class MavenParser implements DependencyParser {
 
             if (scope == null
                     || scope.isBlank()) {
-                scope = "compile";
+                scope = managedScopes.getOrDefault(groupId + ":" + artifactId, "compile");
             }
 
             boolean optional =
@@ -654,6 +665,31 @@ public class MavenParser implements DependencyParser {
      * 외부에서 POM의 dependencyManagement를
      * 읽을 때 사용한다.
      */
+    public Map<String, String> parseManagedScopes(
+            File file, Map<String, String> properties
+    ) throws Exception {
+        Map<String, String> scopes = new HashMap<>();
+        Document document = parseDocument(file);
+        Element management = getDirectChildElement(document.getDocumentElement(), "dependencyManagement");
+        Element dependencies = management == null ? null : getDirectChildElement(management, "dependencies");
+        if (dependencies == null) return scopes;
+        NodeList children = dependencies.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            if (!(children.item(i) instanceof Element dependency)
+                    || !"dependency".equals(dependency.getTagName())) continue;
+            Element group = getDirectChildElement(dependency, "groupId");
+            Element artifact = getDirectChildElement(dependency, "artifactId");
+            Element scopeElement = getDirectChildElement(dependency, "scope");
+            if (group == null || artifact == null || scopeElement == null) continue;
+            String scope = resolveProperty(scopeElement.getTextContent(), properties);
+            if (scope == null || scope.isBlank() || "import".equals(scope)) continue;
+            String key = resolveProperty(group.getTextContent(), properties) + ":"
+                    + resolveProperty(artifact.getTextContent(), properties);
+            scopes.put(key, scope);
+        }
+        return scopes;
+    }
+
     public Map<String, String> parseManagedVersions(
             File file,
             Map<String, String> properties
