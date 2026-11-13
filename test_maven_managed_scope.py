@@ -42,8 +42,15 @@ class ManagedScopeTests(unittest.TestCase):
                 + ('<version>1.0</version>' if version else '')
                 + ('<scope>' + scope + '</scope>' if scope else '') + '</dependency>')
 
-    def run_case(self, managed_scope='test', explicit_scope=None, imported=False, root_direct=False):
+    def run_case(self, managed_scope='test', explicit_scope=None, imported=False, root_direct=False, typed_collision=False, classifier_collision=False):
         managed = '<dependencyManagement><dependencies>' + self.dependency('test-helper', managed_scope, True) + '</dependencies></dependencyManagement>'
+        if typed_collision or classifier_collision:
+            test_variant = self.dependency('test-helper', 'test', True)
+            variant = '<type>test-jar</type>' if typed_collision else '<classifier>tests</classifier>'
+            test_variant = test_variant.replace('</artifactId>', '</artifactId>' + variant)
+            managed = ('<dependencyManagement><dependencies>'
+                       + self.dependency('test-helper', version=True) + test_variant
+                       + '</dependencies></dependencyManagement>')
         self.publish('test-helper', '')
         if imported:
             self.publish('scope-bom', managed)
@@ -82,3 +89,13 @@ class ManagedScopeTests(unittest.TestCase):
 
     def test_imported_managed_test_not_transitive(self):
         self.assertEqual(['library'], [row['name'] for row in self.run_case(imported=True)])
+
+    def test_test_jar_scope_does_not_replace_regular_jar_scope(self):
+        rows = self.run_case(typed_collision=True)
+        self.assertEqual({'library', 'test-helper'}, {row['name'] for row in rows})
+        self.assertTrue(all(row['scope'] == 'compile' for row in rows))
+
+    def test_classifier_scope_does_not_replace_regular_jar_scope(self):
+        rows = self.run_case(classifier_collision=True)
+        self.assertEqual({'library', 'test-helper'}, {row['name'] for row in rows})
+        self.assertTrue(all(row['scope'] == 'compile' for row in rows))
