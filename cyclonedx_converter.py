@@ -124,6 +124,48 @@ def _vulnerability_method(version: Any) -> str | None:
     return {"4.0": "CVSSv4", "3.1": "CVSSv31", "3.0": "CVSSv3", "2.0": "CVSSv2"}.get(str(version))
 
 
+def _risk_packages(risk_result: dict[str, Any]) -> list[dict[str, Any]]:
+    """Adapt normalized priority output without inventing missing CVSS scores."""
+    if "results" not in risk_result:
+        packages = risk_result.get("packages", [])
+        if not isinstance(packages, list):
+            raise ValueError("risk JSON 'packages' must be a list")
+        return packages
+    rows = risk_result["results"]
+    if not isinstance(rows, list):
+        raise ValueError("risk JSON 'results' must be a list")
+    packages = []
+    for row in rows:
+        if not isinstance(row, dict) or not isinstance(row.get("package"), dict):
+            raise ValueError("Each normalized result must contain a package object")
+        findings = []
+        vulnerabilities = row.get("vulnerabilities", [])
+        if not isinstance(vulnerabilities, list):
+            raise ValueError("Normalized vulnerabilities must be a list")
+        for vulnerability in vulnerabilities:
+            if not isinstance(vulnerability, dict):
+                raise ValueError("Each normalized vulnerability must be an object")
+            risk = vulnerability.get("project_priority") or {}
+            selected = risk.get("selected_cvss") or {}
+            findings.append({
+                "vulnerability_id": vulnerability.get("canonical_id") or vulnerability.get("id"),
+                "aliases": vulnerability.get("all_ids") or vulnerability.get("cve_ids") or [],
+                "cvss_score": selected.get("score"),
+                "cvss_vector": selected.get("vector"),
+                "cvss_version": selected.get("version"),
+                "cvss_source": selected.get("source"),
+                "priority_score": risk.get("priority_score"),
+                "priority_status": risk.get("status"),
+                "priority_reason": risk.get("reason"),
+                "runtime_applicability": risk.get("runtime_applicability", vulnerability.get("runtime_applicability")),
+                "match_status": risk.get("version_match", vulnerability.get("version_match")),
+                "provisional": risk.get("provisional"),
+                "lookup_status": row.get("lookup_status"),
+            })
+        packages.append({"purl": row["package"].get("purl"), "findings": findings})
+    return packages
+
+
 def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
                              component_refs: set[str]) -> list[dict[str, Any]]:
     """Convert risk JSON findings and preserve BOMerang-specific risk metadata."""
@@ -131,9 +173,7 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
         return []
     if not isinstance(risk_result, dict):
         raise TypeError("risk_result must be a dictionary")
-    packages = risk_result.get("packages", [])
-    if not isinstance(packages, list):
-        raise ValueError("risk JSON 'packages' must be a list")
+    packages = _risk_packages(risk_result)
 
     vulnerabilities: dict[str, dict[str, Any]] = {}
     assessments_by_id = {}
@@ -169,7 +209,7 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
             version = finding.get("cvss_version")
             severity = _severity(finding.get("severity"))
             if score is not None or vector or severity:
-                rating: dict[str, Any] = {"source": {"name": "CVSS"}}
+                rating: dict[str, Any] = {"source": {"name": finding.get("cvss_source") or "CVSS"}}
                 if isinstance(score, (int, float)):
                     rating["score"] = score
                 if isinstance(vector, str) and vector:
@@ -195,7 +235,9 @@ def _convert_vulnerabilities(risk_result: dict[str, Any] | None,
             for key in ("priority_score", "score_breakdown", "review_required",
                         "review_reasons", "exploit_conditions_status", "vendor_assessment",
                         "match_source", "match_status", "status", "cvss_assessment_type",
-                        "cvss_source", "scope_unknown", "depth_unknown"):
+                        "cvss_source", "scope_unknown", "depth_unknown",
+                        "priority_status", "priority_reason", "runtime_applicability",
+                        "provisional", "lookup_status"):
                 prop = _property(key, finding.get(key))
                 if prop and prop not in vuln["properties"]:
                     vuln["properties"].append(prop)
