@@ -39,6 +39,9 @@ jobs:
         # Compiles Java 17 sources in a disposable copy, never checkout target/classes.
         # Three fresh pytest processes prevent collisions among legacy module copies.
         run: python -B ci/run_checks.py --output test-results/verification
+        
+      - name: Verify normalized priority SBOM export
+        run: python -B -m pytest test_normalized_priority_sbom.py --import-mode=importlib -p no:cacheprovider -q --junitxml=test-results/verification/normalized-priority-sbom.xml
 
       - name: Upload verification evidence
         if: always()
