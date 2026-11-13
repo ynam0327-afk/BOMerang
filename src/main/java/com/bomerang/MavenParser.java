@@ -202,7 +202,7 @@ public class MavenParser implements DependencyParser {
 
             if (scope == null
                     || scope.isBlank()) {
-                scope = managedScopes.getOrDefault(groupId + ":" + artifactId, "compile");
+                scope = managedScopes.getOrDefault(managedScopeKey(groupId, artifactId, element), "compile");
             }
 
             boolean optional =
@@ -665,6 +665,15 @@ public class MavenParser implements DependencyParser {
      * 외부에서 POM의 dependencyManagement를
      * 읽을 때 사용한다.
      */
+    private String managedScopeKey(String group, String artifact, Element dependency) {
+        Element typeElement = getDirectChildElement(dependency, "type");
+        Element classifierElement = getDirectChildElement(dependency, "classifier");
+        String type = typeElement == null ? "jar" : typeElement.getTextContent().trim();
+        if (type.isEmpty()) type = "jar";
+        String classifier = classifierElement == null ? "" : classifierElement.getTextContent().trim();
+        return group + ":" + artifact + ":" + type + ":" + classifier;
+    }
+
     public Map<String, String> parseManagedScopes(
             File file, Map<String, String> properties
     ) throws Exception {
@@ -683,8 +692,8 @@ public class MavenParser implements DependencyParser {
             if (group == null || artifact == null || scopeElement == null) continue;
             String scope = resolveProperty(scopeElement.getTextContent(), properties);
             if (scope == null || scope.isBlank() || "import".equals(scope)) continue;
-            String key = resolveProperty(group.getTextContent(), properties) + ":"
-                    + resolveProperty(artifact.getTextContent(), properties);
+            String key = managedScopeKey(resolveProperty(group.getTextContent(), properties),
+                    resolveProperty(artifact.getTextContent(), properties), dependency);
             scopes.put(key, scope);
         }
         return scopes;
