@@ -63,6 +63,8 @@ def _component(node: dict[str, Any]) -> dict[str, Any]:
 
     # CycloneDX component scope is limited to required, optional, or excluded.
     source_scope = (node.get("scope") or "").lower()
+    if "runtime" in node.get("scopes", []):
+        source_scope = "runtime"
     if source_scope in {"test", "dev", "development", "provided", "optional"}:
         component["scope"] = "optional"
     elif source_scope in {"excluded"}:
@@ -77,6 +79,8 @@ def _component(node: dict[str, Any]) -> dict[str, Any]:
                 "parse_status", "error_message", "is_circular",
                 "scope", "scopes", "optional", "optional_values",
                 "version_status", "selection_policy", "version_evidence",
+                "declarations", "requirement_contexts", "source_files", "declared_versions",
+                "extras", "markers", "metadata_errors",
                 "graph_resolution_status", "dependency_conflicts"):
         prop = _property(key, node.get(key))
         if prop is not None and (node.get(key) != "" or isinstance(node.get(key), (list, dict))):
@@ -282,6 +286,11 @@ def convert_to_cyclonedx(
             if not isinstance(existing_refs, list) or not isinstance(added_refs, list):
                 raise ValueError(f"'dependencies' for {purl} must be a list")
             nodes_by_ref[purl]["dependencies"] = existing_refs + added_refs
+            for key in ("declarations", "requirement_contexts", "source_files", "declared_versions",
+                        "extras", "markers", "scopes", "metadata_errors"):
+                if key in nodes_by_ref[purl] or key in node:
+                    values = nodes_by_ref[purl].get(key, []) + node.get(key, [])
+                    nodes_by_ref[purl][key] = list({json.dumps(v, sort_keys=True): v for v in values}.values())
             conflicts = nodes_by_ref[purl].get("dependency_conflicts", []) + node.get("dependency_conflicts", [])
             if conflicts:
                 nodes_by_ref[purl]["dependency_conflicts"] = list({json.dumps(c, sort_keys=True): c for c in conflicts}.values())

@@ -1,6 +1,8 @@
 import tomllib
 from pathlib import Path
 from packaging.requirements import Requirement
+from packaging.version import Version
+import re
 
 
 def _parse_poetry_dependency(name: str, version: str) -> Requirement | None:
@@ -8,24 +10,29 @@ def _parse_poetry_dependency(name: str, version: str) -> Requirement | None:
     Poetry dependency의 버전 표현을 PEP 508 Requirement로 변환한다.
     """
 
+    version = version.strip()
     if version == "*":
         return Requirement(name)
 
     if version.startswith("^"):
         version = version[1:]
-        parts = version.split(".")
-
-        major = int(parts[0])
-
-        if major > 0:
-            upper = f"{major + 1}.0.0"
-        elif len(parts) > 1 and int(parts[1]) > 0:
-            upper = f"0.{int(parts[1]) + 1}.0"
-        else:
-            upper = f"0.0.{int(parts[2]) + 1}"
+        release = list(Version(version).release)
+        index = next((i for i, part in enumerate(release) if part), len(release) - 1)
+        upper_parts = release[:index] + [release[index] + 1]
+        upper = ".".join(map(str, upper_parts + [0] * (3 - len(upper_parts))))
 
         return Requirement(f"{name}>={version},<{upper}")
 
+    if version.startswith("~") and not version.startswith("~="):
+        lower = version[1:]
+        release = Version(lower).release
+        upper = f"{release[0] + 1}.0.0" if len(release) == 1 else f"{release[0]}.{release[1] + 1}.0"
+        return Requirement(f"{name}>={lower},<{upper}")
+    if re.fullmatch(r"\d+(?:\.\d+)*\.\*", version):
+        return Requirement(f"{name}=={version}")
+    if not version.startswith(("<", ">", "=", "!", "~=")):
+        Version(version)  # Validate before concatenating; never create a new name.
+        return Requirement(f"{name}=={version}")
     return Requirement(f"{name}{version}")
 
 
@@ -96,6 +103,9 @@ def parse_pyproject(file_path: str) -> list[tuple[Requirement, str]]:
             if not isinstance(group, dict):
                 continue
 
+            if group.get("optional") is True:
+                continue
+
             dependencies = group.get("dependencies", {})
 
             if not isinstance(dependencies, dict):
@@ -141,10 +151,12 @@ def make_declaration(raw, scope, source_file, locator, *, kind="runtime",
     marker_raw = None
     if req.marker is not None:
         from packaging.markers import Marker
-        for index, char in enumerate(raw):
+        from requirement_parser import normalize_requirement_line
+        marker_source = normalize_requirement_line(raw)
+        for index, char in enumerate(marker_source):
             if char != ";":
                 continue
-            candidate = raw[index + 1:].strip()
+            candidate = marker_source[index + 1:].strip()
             try:
                 if str(Marker(candidate)) == str(req.marker):
                     marker_raw = candidate
@@ -281,11 +293,11 @@ def parse_pyproject_document(file_path):
 
     # Reuse the established Poetry conversion, retaining source keys and values.
     poetry = data.get("tool", {}).get("poetry", {})
-    poetry_sets = [("runtime", poetry.get("dependencies", {}), "tool.poetry.dependencies")]
+    poetry_sets = [("runtime", poetry.get("dependencies", {}), "tool.poetry.dependencies", False)]
     for name, group in poetry.get("group", {}).items():
         if isinstance(group, dict):
-            poetry_sets.append((name, group.get("dependencies", {}), f"tool.poetry.group.{name}.dependencies"))
-    for scope, dependencies, locator in poetry_sets:
+            poetry_sets.append((name, group.get("dependencies", {}), f"tool.poetry.group.{name}.dependencies", group.get("optional") is True))
+    for scope, dependencies, locator, optional_group in poetry_sets:
         if not isinstance(dependencies, dict):
             error(locator, dependencies, "Poetry dependencies must be a table")
             continue
@@ -300,6 +312,7 @@ def parse_pyproject_document(file_path):
                 declaration = make_declaration(
                     version, scope, path, locator + "." + name, kind="poetry",
                     group=None if scope == "runtime" else scope, requirement=req,
+                    optional=optional_group, graph_enabled=not optional_group,
                     resolved_source=resolved_source)
                 declaration["original_key"] = name
                 declarations.append(declaration)

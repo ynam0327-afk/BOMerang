@@ -28,7 +28,7 @@ MAIN = [
     "test_gradle_inline.py", "test_gradle_missing_version.py", "test_gradle_managed.py", "test_maven_managed_scope.py",
 ]
 SUITES = [
-    ("main", MAIN, ["python-parser", "python-security-integration"], 385),
+    ("main", MAIN, ["python-parser", "python-security-integration"], 420),
     ("security-review", ["src/main/java/com/bomerang/test_" + name + ".py" for name in
         ["week7", "normalize_week7", "osv_version_matcher", "maven_versions", "maven_qualifiers",
          "evaluation_metrics", "rebuild_selected_graph", "review_priorities", "risk_model"]],

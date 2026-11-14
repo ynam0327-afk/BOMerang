@@ -32,6 +32,9 @@ def parse_python_file(path,client=None,*,metadata=None,project_files=None):
             self.queries[canonicalize_name(name)]={'url':getattr(self.wrapped,'BASE_URL','test://fixture')+'/'+name+'/json','queried_at':now(),'candidate_list_sha256':hashlib.sha256(json.dumps(values).encode()).hexdigest()}
             return values
         def get_dependencies(self,*a,**kw):return self.wrapped.get_dependencies(*a,**kw)
+        def get_dependency_diagnostics(self,*a):
+            getter=getattr(self.wrapped,'get_dependency_diagnostics',None)
+            return getter(*a) if getter else []
     recording=RecordingClient(client or PyPIClient())
     class RecordingParser(PythonParser):
         def __init__(self):super().__init__(recording);self.observations=[]
@@ -79,9 +82,9 @@ def parse_python_file(path,client=None,*,metadata=None,project_files=None):
         if not node.resolved_version:row.update(version_status='unresolved',version_evidence=None)
         if not row['version_status']:row['version_status']='unresolved'
         row['version_observations']=observations
-        row['declared_versions']=sorted({o['declared_version'] for o in observations if o['declared_version']})
+        row['declared_versions']=sorted(set(row.get('declared_versions',[]))|{o['declared_version'] for o in observations if o['declared_version']})
         if estimated:row['declared_version']=estimated[0]['declared_version']
-        row['source_files']=[str(path)]
+        row['source_files']=row.get('source_files') or [str(path)]
         row['graph_resolution_status']='dependency_conflict' if row.get('dependency_conflicts') else 'partial_parse_error' if node.parse_status=='error' else 'parser_result_not_independent_environment_validation'
         row['resolution_error']=node.error_message if node.resolved_version is None else None
         row['parser_error']=node.error_message
@@ -116,6 +119,12 @@ def merge_packages(rows):
             continue
         old=merged[key]
         old['declarations']=merge_declarations(old.get('declarations',[])+row.get('declarations',[]))
+        for key in ('extras','markers'):
+            if key in old or key in row:
+                old[key]=sorted(set(old.get(key,[]))|set(row.get(key,[])))
+        for key in ('requirement_contexts','metadata_errors'):
+            if key in old or key in row:
+                old[key]=list({json.dumps(value,sort_keys=True):value for value in old.get(key,[])+row.get(key,[])}.values())
         old['dependencies']=sorted(set(old.get('dependencies',[]))|set(row.get('dependencies',[])))
         old['depth']=min(old.get('depth',1),row.get('depth',1))
         old['source_files']=sorted(set(old.get('source_files',[old.get('source_file')]))|set(row.get('source_files',[row.get('source_file')])),key=lambda x:x or '')
@@ -133,6 +142,8 @@ def merge_packages(rows):
             old['optional_values']=sorted(set(optional_values))
             if optional_values:
                 old['optional']=False not in optional_values
+        elif 'runtime' in old['scopes']:
+            old['scope']='runtime'
         if row.get('version_status')=='estimated':
             for k in ('version_status','selection_policy','version_evidence','resolution_queried_at','declared_version'):old[k]=row.get(k)
         old['version_observations']=old.get('version_observations',[])+row.get('version_observations',[])

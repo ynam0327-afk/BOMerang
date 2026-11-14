@@ -7,12 +7,17 @@ import sys
 from toml_parser import parse_pyproject, parse_pyproject_document, make_declaration
 
 from dependency_node import DependencyNode
-from requirement_parser import parse_requirement
+from requirement_parser import parse_requirement, iter_requirement_lines
 from pypi_client import PyPIClient
 
 # 중복 dependency 재탐색 & Node 정보 갱신 정책 -- 테스트&통합에서 문제 가능성 있음
 
 _UNSET = object()
+
+
+def _satisfies(specifiers, version):
+    # Explicit prerelease bounds opt in; an unspecified policy keeps releases only.
+    return specifiers.contains(version, prereleases=bool(specifiers.prereleases))
     # 버전 인자 전달 X vs 버전 조회: None
 def make_purl(name: str, version: str | None = None) -> str:
     # PyPI package의 PURL을 생성
@@ -35,6 +40,7 @@ class PythonParser:
         self.declarations = []
         self.declaration_errors = []
         self.declaration_packages = []
+        self._constraints = {}
         # 확정 버전 저장 공간
 
     def _is_applicable(self, requirement) -> bool:
@@ -57,12 +63,14 @@ class PythonParser:
             self,
             file_path: Path,
             visited_files: set,
+            constraint=False,
     ):
         file_path = file_path.resolve()
-        if file_path in visited_files:
+        key = (file_path, constraint)
+        if key in visited_files:
             return
 
-        visited_files.add(file_path)
+        visited_files.add(key)
 
         if file_path.name == "pyproject.toml":
             requirements = parse_pyproject(str(file_path))
@@ -81,23 +89,27 @@ class PythonParser:
             return
 
         with file_path.open("r", encoding="utf-8-sig") as files:
-            for line in files:
+            for _line_number, line in iter_requirement_lines(files):
                 result = parse_requirement(line)
 
                 if result is None:
                     continue
 
                 result_type, value = result
-                if result_type == "file":
+                if result_type in {"file", "constraint"}:
                     referenced_file = (file_path.parent / value).resolve()
 
                     self._collect_declared_versions(
                         referenced_file,
                         visited_files,
+                        constraint=constraint or result_type == "constraint",
                     )
 
                 elif result_type == "package":
                     if not self._is_applicable(value):
+                        continue
+                    if constraint:
+                        self._constraints.setdefault(canonicalize_name(value.name), []).append(value)
                         continue
                     version = self._get_resolved_version(value)
 
@@ -115,6 +127,7 @@ class PythonParser:
         self.declarations = []
         self.declaration_errors = []
         self.declaration_packages = []
+        self._constraints = {}
 
         # All inputs selected by one integrated analysis share direct pins.
         # Only constraints are collected here; graph traversal remains per file.
@@ -134,6 +147,7 @@ class PythonParser:
         )
 
         self._merge_unresolved_nodes(nodes)
+        self._recompute_graph_metadata(nodes)
         self._apply_dependency_conflicts(nodes)
         self._finalize_declarations(nodes)
 
@@ -174,7 +188,7 @@ class PythonParser:
             return
 
         with file_path.open("r", encoding="utf-8-sig") as file:
-            for line_number, line in enumerate(file, 1):
+            for line_number, line in iter_requirement_lines(file):
 
                 result = parse_requirement(line)
 
@@ -211,7 +225,7 @@ class PythonParser:
                 elif result_type == "package":
                     declaration = make_declaration(
                         line.strip(), None, file_path, f"line:{line_number}", kind="requirements",
-                        resolved_source=str(file_path))
+                        resolved_source=str(file_path), requirement=value)
                     self.declarations.append(declaration)
                     if not declaration["active_in_graph"]:
                         continue
@@ -242,11 +256,13 @@ class PythonParser:
         declared_version = self._get_declared_version(requirement)
 
         if resolved_version is _UNSET:
-            if not requirement.specifier:
+            if (not requirement.specifier
+                    and canonicalize_name(name) not in self._declared_exact_versions
+                    and canonicalize_name(name) not in self._constraints):
                 resolved_version = None
             else:
                 try:
-                    if (self._get_resolved_version(requirement) is None
+                    if (not requirement.url and self._get_resolved_version(requirement) is None
                             and canonicalize_name(name) in self._declared_exact_versions):
                         resolved_version, resolution_error = self._resolve_transitive_version(requirement)
                     else:
@@ -290,6 +306,20 @@ class PythonParser:
 
             nodes[purl] = node
 
+        context = {"requirement": str(requirement), "declared_version": declared_version,
+                   "marker": str(requirement.marker) if requirement.marker else None,
+                   "extras": sorted(canonicalize_name(extra) for extra in requirement.extras),
+                   "scope": scope, "source_file": str(source_file.resolve()),
+                   "requiring_purl": requiring_purl}
+        if context not in node.requirement_contexts:
+            node.requirement_contexts.append(context)
+        for attribute, values in (("scopes", [scope or "runtime"]),
+                                  ("declared_versions", [declared_version] if declared_version else []),
+                                  ("markers", [context["marker"]] if context["marker"] else []),
+                                  ("extras", context["extras"]),
+                                  ("source_files", [context["source_file"]])):
+            setattr(node, attribute, sorted(set(getattr(node, attribute)) | set(values)))
+
         # 버전 조회가 실패하더라도 패키지 정보 유지 -- 노드 기록
         if resolution_error is not None:
             node.parse_status = "error"
@@ -327,6 +357,19 @@ class PythonParser:
                 resolved_version,
                 extras=set(requirement.extras)
             )        
+
+            diagnostics = getattr(self.pypi_client, "get_dependency_diagnostics", None)
+            if diagnostics:
+                for diagnostic in diagnostics(name, resolved_version):
+                    error = dict(diagnostic, source_file=str(source_file.resolve()),
+                                 requiring_purl=purl, category="invalid_dependency_metadata")
+                    if error not in node.metadata_errors:
+                        node.metadata_errors.append(error)
+                    if error not in self.declaration_errors:
+                        self.declaration_errors.append(error)
+                if node.metadata_errors:
+                    node.parse_status = "error"
+                    node.error_message = "Invalid PyPI dependency metadata; see metadata_errors"
 
             for dependency in dependencies:
                 # PyPIClient.get_dependencies()에서 이미
@@ -402,6 +445,8 @@ class PythonParser:
         for purl, node in nodes.items():
             if node.resolved_version is not None:
                 continue
+            if node.parse_status == "error":
+                continue
             name = canonicalize_name(node.name)
             candidates = versioned_by_name.get(name, {})
 
@@ -411,12 +456,16 @@ class PythonParser:
             version, target_purl = next(iter(candidates.items()))
 
             # 기존 버전 조건이 있다면 후보 버전이 조건을 만족해야 한다.
+            if any(context.get("requirement", "").find(" @ ") >= 0
+                   for context in node.requirement_contexts):
+                continue
+            versions = set(node.declared_versions)
             if node.declared_version:
+                versions.add(node.declared_version)
+            if versions:
                 try:
-                    if not SpecifierSet(node.declared_version).contains(
-                        Version(version),
-                        prereleases=False,
-                    ):
+                    if not all(_satisfies(SpecifierSet(specifier), Version(version))
+                               for specifier in versions):
                         continue
                 except Exception:
                     continue
@@ -447,7 +496,38 @@ class PythonParser:
             target_node.is_circular = (
                 target_node.is_circular or old_node.is_circular
             )
+            for attribute in ("scopes", "extras", "markers", "declared_versions", "source_files"):
+                setattr(target_node, attribute, sorted(set(getattr(target_node, attribute)) |
+                                                       set(getattr(old_node, attribute))))
+            for context in old_node.requirement_contexts:
+                if context not in target_node.requirement_contexts:
+                    target_node.requirement_contexts.append(context)
             del nodes[old_purl]
+
+    def _recompute_graph_metadata(self, nodes):
+        """Shortest paths and scopes must propagate after all direct roots exist."""
+        from collections import deque
+        queue = deque(node for node in nodes.values() if node.depth == 1)
+        distances = {node.purl: 1 for node in queue}
+        while queue:
+            node = queue.popleft()
+            for purl in node.dependencies:
+                if purl not in nodes:
+                    continue
+                child = nodes[purl]
+                distance = distances[node.purl] + 1
+                scopes = sorted(set(child.scopes) | set(node.scopes))
+                changed = scopes != child.scopes
+                child.scopes = scopes
+                if distance < distances.get(purl, float("inf")):
+                    distances[purl] = distance
+                    changed = True
+                if changed:
+                    queue.append(child)
+        for purl, node in nodes.items():
+            node.depth = distances.get(purl, node.depth)
+            if node.scope is not None and "runtime" in node.scopes:
+                node.scope = "runtime"
 
 
     def _direct_pin_conflict(self, requirement, source_file, requiring_purl):
@@ -457,8 +537,10 @@ class PythonParser:
             return None
         if len(versions) > 1:
             reason = "multiple_direct_pins"
-        elif requirement.specifier and not requirement.specifier.contains(Version(versions[0]), prereleases=False):
+        elif requirement.specifier and not _satisfies(requirement.specifier, Version(versions[0])):
             reason = "incompatible_direct_pin"
+        elif name in self._constraints and not _satisfies(self._constrained_requirement(requirement).specifier, Version(versions[0])):
+            reason = "incompatible_constraint"
         else:
             return None
         return {
@@ -500,7 +582,7 @@ class PythonParser:
             req = Requirement(declaration["requirement"])
             version = self._get_resolved_version(req)
             candidates = [node for node in versioned_by_name.get(declaration["name"], [])
-                          if not req.specifier or req.specifier.contains(node.resolved_version)]
+                          if not req.specifier or _satisfies(req.specifier, node.resolved_version)]
             if version is None and declaration["active_in_graph"] and len(candidates) == 1:
                 version = candidates[0].resolved_version
             declaration["resolved_version"] = version
@@ -549,10 +631,20 @@ class PythonParser:
 
     def _resolve_version(self, requirement):
         # PyPI 후보 버전 중 requirement 조건 만족하는 버전 선택
+        original = requirement
+        requirement = self._constrained_requirement(requirement)
         resolved_version = self._get_resolved_version(requirement)
         # 정확한 버전은 기존 로직 사용
         if resolved_version is not None:
+            if not _satisfies(requirement.specifier, resolved_version):
+                raise RuntimeError(f"Incompatible constraints for {original}")
             return resolved_version
+
+        exact = self._get_resolved_version(original)
+        if exact is not None:
+            if not _satisfies(requirement.specifier, exact):
+                raise RuntimeError(f"Incompatible constraints for {original}")
+            return exact
 
         # 버전 조건이 없는 경우
         if not requirement.specifier:
@@ -575,10 +667,7 @@ class PythonParser:
             try:
                 parsed_version = Version(version)
 
-                if requirement.specifier.contains(
-                    parsed_version,
-                    prereleases=False
-                ):
+                if _satisfies(requirement.specifier, parsed_version):
                     candidates.append(parsed_version)
 
             except Exception:
@@ -590,6 +679,7 @@ class PythonParser:
         return str(max(candidates)) # 버전 범위 중 가장 최신 버전
 
     def _resolve_transitive_version(self, requirement):
+        requirement = self._constrained_requirement(requirement)
         name = canonicalize_name(requirement.name)
         pinned_versions = self._declared_exact_versions.get(name, set())
 
@@ -604,7 +694,7 @@ class PythonParser:
             return None, f"Multiple direct dependency versions for {name}: {versions}"
 
         version = next(iter(pinned_versions))
-        if not requirement.specifier or requirement.specifier.contains(Version(version), prereleases=False):
+        if not requirement.specifier or _satisfies(requirement.specifier, Version(version)):
             return version, None
 
         # Preserve the direct node and the unresolved requirement separately.
@@ -612,3 +702,13 @@ class PythonParser:
             f"No compatible direct dependency version for "
             f"{name}: {version}, required {requirement.specifier}"
         )
+
+    def _constrained_requirement(self, requirement):
+        from packaging.requirements import Requirement
+        constraints = self._constraints.get(canonicalize_name(requirement.name), [])
+        if not constraints or requirement.url:
+            return requirement
+        result = Requirement(str(requirement))
+        for constraint in constraints:
+            result.specifier &= constraint.specifier
+        return result

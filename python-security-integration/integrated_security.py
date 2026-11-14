@@ -18,8 +18,11 @@ def pipeline(packages,client,nvd=False):
     return scanned,normalized,matched,priority
 
 def main():
-    a=argparse.ArgumentParser(description=__doc__);a.add_argument('--python-source',default=str(Path(__file__).with_name('python-parser')));a.add_argument('--python-file',action='append',required=True);a.add_argument('--java-json',required=True);a.add_argument('--out-dir',required=True);a.add_argument('--nvd',action='store_true');s=a.parse_args()
+    a=argparse.ArgumentParser(description=__doc__);a.add_argument('--python-source',default=str(Path(__file__).resolve().parents[1]/'python-parser'));a.add_argument('--python-file',action='append',required=True);a.add_argument('--java-json',required=True);a.add_argument('--out-dir',required=True);a.add_argument('--nvd',action='store_true');s=a.parse_args()
     sys.path.insert(0,str(Path(s.python_source).resolve()))
+    import python_parser
+    if Path(python_parser.__file__).resolve() != Path(s.python_source).resolve()/'python_parser.py':
+        raise ImportError('Requested Python parser differs from the loaded module; use a fresh process')
     rows=[]
     for file in s.python_file:rows.extend(parse_python_file(Path(file).resolve()))
     with open(s.java_json,encoding='utf-8-sig') as f:java=json.load(f)
@@ -30,7 +33,7 @@ def main():
     for filename,data in zip(['scan.json','normalized.json','matched.json','priority.json'],outputs):write(out/filename,data)
     summary={'packages':len(packages),'by_ecosystem':{},'lookup_statuses':{},'version_statuses':{},'python_marker_environment':default_environment(),
         'nvd_enrichment_requested':s.nvd,'priority_summary':outputs[-1]['priority_summary'],
-        'limitations':['Python requires_python interpreter compatibility not solved.','Environment markers use the current Python process environment.','Selected extras can be filtered again by the original parser; full extras semantics not yet verified.','Saved Java output is reused; its analysis environment may differ from current Python environment.','No project-wide dependency conflict solver or lockfile support.']}
+        'limitations':['Environment markers and distribution compatibility use the current Python process environment.','Source distribution buildability and installation are not verified.','Saved Java output is reused; its analysis environment may differ from current Python environment.','No project-wide dependency conflict solver or lockfile support.']}
     for p,r in zip(packages,outputs[0]['results']):
         for key,value in [('by_ecosystem',p['ecosystem']),('lookup_statuses',r['lookup_status']),('version_statuses',r['version_status'])]:summary[key][value]=summary[key].get(value,0)+1
     write(out/'summary.json',summary);print(json.dumps(summary,ensure_ascii=False,indent=2))

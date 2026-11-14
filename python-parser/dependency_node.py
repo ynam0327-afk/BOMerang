@@ -52,6 +52,13 @@ class DependencyNode:
     # 파일 참조와 패키지 의존성의 각 순환은 별개의 사이클이라 분리 필요.
     # Source declarations are additive; existing graph fields remain unchanged.
     declarations: list[dict] = field(default_factory=list)
+    scopes: list[str] = field(default_factory=list)
+    extras: list[str] = field(default_factory=list)
+    markers: list[str] = field(default_factory=list)
+    declared_versions: list[str] = field(default_factory=list)
+    source_files: list[str] = field(default_factory=list)
+    requirement_contexts: list[dict] = field(default_factory=list)
+    metadata_errors: list[dict] = field(default_factory=list)
 
     # A conflict is separate from version provenance and environment validation.
     dependency_conflicts: list[dict] = field(default_factory=list)

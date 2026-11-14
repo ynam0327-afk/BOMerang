@@ -72,7 +72,7 @@ def test_network_failure(monkeypatch):
 
 
 def test_timeout(monkeypatch):
-    """Direct socket timeout propagates to the caller."""
+    """Timeouts share the parser's recoverable RuntimeError contract."""
     def fake_urlopen(request, timeout=10):
         raise socket.timeout("Timed out")
 
@@ -80,14 +80,14 @@ def test_timeout(monkeypatch):
         pypi_client, "urlopen", fake_urlopen
     )
 
-    with pytest.raises(TimeoutError):
+    with pytest.raises(RuntimeError, match="timed out"):
         PyPIClient().get_release_metadata(
             "sample", "1.0.0"
         )
 
 
 def test_invalid_json(monkeypatch):
-    """Invalid JSON raises a parsing exception."""
+    """Invalid JSON shares the parser's recoverable RuntimeError contract."""
     def fake_urlopen(request, timeout=10):
         return io.BytesIO(b"{invalid-json}")
 
@@ -95,7 +95,7 @@ def test_invalid_json(monkeypatch):
         pypi_client, "urlopen", fake_urlopen
     )
 
-    with pytest.raises(json.JSONDecodeError):
+    with pytest.raises(RuntimeError, match="PyPI response"):
         PyPIClient().get_release_metadata(
             "sample", "1.0.0"
         )
@@ -151,3 +151,36 @@ def test_malformed_dependency(monkeypatch):
     names = {dependency.name for dependency in dependencies}
 
     assert names == {"requests", "urllib3"}
+
+
+def test_release_candidates_require_compatible_distribution_files(monkeypatch):
+    mock_json_response(monkeypatch, {"releases": {
+        "1": [{"filename": "demo-1.tar.gz", "requires_python": ">=3"}],
+        "2": [{"filename": "demo-2-py3-none-any.whl", "requires_python": ">=3"}],
+        "3": [],
+        "4": [{"filename": "demo-4.tar.gz", "requires_python": ">=999"}],
+        "5": [{"filename": "demo-5-cp27-cp27m-win32.whl"}],
+        "6": [{"filename": "invalid.whl"}],
+        "7": [{"filename": "demo-7.tar.gz", "yanked": True}],
+    }})
+    assert PyPIClient().get_available_versions("demo") == ["1", "2"]
+
+
+@pytest.mark.parametrize("metadata", [
+    {"info": {"requires_python": ">=999"}},
+    {"info": {}, "urls": []},
+    {"info": None},
+    {"info": {}, "urls": [{"filename": "demo-1-cp27-cp27m-win32.whl"}]},
+])
+def test_unusable_exact_release_has_explicit_error(monkeypatch, metadata):
+    mock_json_response(monkeypatch, metadata)
+    with pytest.raises(RuntimeError):
+        PyPIClient().get_dependencies("demo", "1")
+
+
+@pytest.mark.parametrize("requires_dist", ["", {}, 12])
+def test_malformed_requires_dist_envelope_has_diagnostic(monkeypatch, requires_dist):
+    mock_json_response(monkeypatch, {"info": {"requires_dist": requires_dist}})
+    client = PyPIClient()
+    assert client.get_dependencies("demo", "1") == []
+    assert client.get_dependency_diagnostics("demo", "1")[0]["message"] == "requires_dist must be a list"
